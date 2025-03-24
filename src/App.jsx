@@ -15,11 +15,11 @@ import Reports from "./screens/Reports";
     return (
         <div className="overflow-x-hidden">
             <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/viewAsset" element={<ViewAsset />} />
-                <Route path="/addAsset" element={<AddAsset />} />
-                <Route path="/AssetRequest" element={<AssetRequest/>} />
+                <Route path="/signin" element={<Login />} />
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/assets/view" element={<ViewAsset />} />
+                <Route path="/assets/new" element={<AddAsset />} />
+                <Route path="/assets/request" element={<AssetRequest/>} />
                 <Route path="/users" element={<Users/>} />
                 <Route path="/reports" element={<Reports/>} />
             </Routes>
