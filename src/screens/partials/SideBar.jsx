@@ -20,12 +20,11 @@ const SideBar = () => {
 
     return (
         <div className="sidebar">
-            <img src={konza} alt="Konza" style={{ width: '60px', height: 'auto', objectFit: 'cover' }} />
-            <Link to={'/dashboard'} className='dashboard-link'>
+            <img src={konza} alt="Konza" style={{ width: '100px', height: 'auto', objectFit: 'cover' }} />
+            <Link to='/' className='dashboard-link'>
                 <MdOutlineDashboard /> Dashboard
             </Link>
 
-            {/* Section 1 */}
             <div className="asset-management">
                 <p onClick={() => toggleSubChild('section1')} style={{ cursor: 'pointer' }}>
                     <FaHome /> Asset management
@@ -36,13 +35,12 @@ const SideBar = () => {
 
                 {visibleSections.section1 && (
                     <div className="sub-child">
-                        <Link to={'/addAsset'}>Add</Link> <br />
-                        <Link to={'/viewAsset'}>View</Link>
+                        <Link to='/assets/new'>Add</Link> <br />
+                        <Link to='/assets/view'>View</Link>
                     </div>
                 )}
             </div>
 
-            {/* section 2 */}
             <div className="asset-management">
                 <p onClick={() => toggleSubChild('section2')} style={{ cursor: 'pointer' }}>
                 <LuGitPullRequestDraft /> Issuance & Request
@@ -53,11 +51,11 @@ const SideBar = () => {
 
                 {visibleSections.section2 && (
                     <div className="sub-child">
-                        <Link to={'/AssetRequest'}>Asset Request</Link> <br />
+                        <Link to="/assets/request">Asset Request</Link> <br />
                     </div>
                 )}
             </div>
-            {/* section 3 */}
+
             <div className="asset-management">
                 <p onClick={() => toggleSubChild('section3')} style={{ cursor: 'pointer' }}>
                 <FaUserAlt /> User Management
@@ -72,7 +70,7 @@ const SideBar = () => {
                     </div>
                 )}
             </div>
-            {/* section 4*/}
+            
             <div className="asset-management">
                 <p onClick={() => toggleSubChild('section4')} style={{ cursor: 'pointer' }}>
                     <HiDocumentReport  /> Report & Analytics
