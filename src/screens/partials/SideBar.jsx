@@ -1,89 +1,32 @@
-import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { LuGitPullRequestDraft } from "react-icons/lu";
-import { HiDocumentReport } from "react-icons/hi";
-import { FaHome, FaUserAlt } from "react-icons/fa";
-import { MdOutlineDashboard } from "react-icons/md";
 import konza from '/images/konza.jpg';
-import '../dashboard.css';
+import { Folders, GitPullRequest, LayoutDashboard, LayoutGrid, Users2 } from 'lucide-react';
 
 const SideBar = () => {
-    const [visibleSections, setVisibleSections] = useState({});
-
-    const toggleSubChild = (section) => {
-        setVisibleSections((prev) => ({
-            ...prev,
-            [section]: !prev[section]
-        }));
-    };
-
+    
     return (
-        <div className="sidebar">
-            <img src={konza} alt="Konza" style={{ width: '100px', height: 'auto', objectFit: 'cover' }} />
-            <Link to='/' className='dashboard-link'>
-                <MdOutlineDashboard /> Dashboard
-            </Link>
-
-            <div className="asset-management">
-                <p onClick={() => toggleSubChild('section1')} style={{ cursor: 'pointer' }}>
-                    <FaHome /> Asset management
-                    <span>
-                        {visibleSections.section1 ? <IoIosArrowUp /> : <IoIosArrowDown />}
-                    </span>
-                </p>
-
-                {visibleSections.section1 && (
-                    <div className="sub-child">
-                        <Link to='/assets/new'>Add</Link> <br />
-                        <Link to='/assets/view'>View</Link>
-                    </div>
-                )}
+        <div className="w-[20%] bg-primary text-white p-3">
+            <div className="h-[10rem] w-full">
+                <img src={konza} alt="Konza" className='w-full h-full object-contain' />
             </div>
 
-            <div className="asset-management">
-                <p onClick={() => toggleSubChild('section2')} style={{ cursor: 'pointer' }}>
-                <LuGitPullRequestDraft /> Issuance & Request
-                    <span>
-                        {visibleSections.section2 ? <IoIosArrowUp /> : <IoIosArrowDown />}
-                    </span>
-                </p>
-
-                {visibleSections.section2 && (
-                    <div className="sub-child">
-                        <Link to="/assets/request">Asset Request</Link> <br />
-                    </div>
-                )}
-            </div>
-
-            <div className="asset-management">
-                <p onClick={() => toggleSubChild('section3')} style={{ cursor: 'pointer' }}>
-                <FaUserAlt /> User Management
-                    <span>
-                        {visibleSections.section3 ? <IoIosArrowUp /> : <IoIosArrowDown />}
-                    </span>
-                </p>
-
-                {visibleSections.section3 && (
-                    <div className="sub-child">
-                        <Link to={'/users'}>Users</Link> <br />
-                    </div>
-                )}
-            </div>
-            
-            <div className="asset-management">
-                <p onClick={() => toggleSubChild('section4')} style={{ cursor: 'pointer' }}>
-                    <HiDocumentReport  /> Report & Analytics
-                    <span>
-                        {visibleSections.section4 ? <IoIosArrowUp /> : <IoIosArrowDown />}
-                    </span>
-                </p>
-
-                {visibleSections.section4 && (
-                    <div className="sub-child">
-                        <Link to={'/reports'}>generate Report</Link> <br />
-                    </div>
-                )}
+            <div className='space-y-5 text-xl mt-7'>
+                <Link to='/' className='flex items-center gap-3'>
+                    <LayoutDashboard />
+                    <span>Dashboard</span>
+                </Link>
+                <Link to='/assets/view' className='flex items-center gap-3'>
+                    <Folders />
+                    <span>Asset management</span>
+                </Link>
+                <Link to='/assets/request' className='flex items-center gap-3'>
+                    <GitPullRequest />
+                    <span>Requested Assets</span>
+                </Link>
+                <Link to='/users' className='flex items-center gap-3'>
+                    <Users2 />
+                    <span>User Management</span>
+                </Link>
             </div>
         </div>
     );
