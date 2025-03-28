@@ -5,7 +5,7 @@ import { Folders, GitPullRequest, LayoutDashboard, LayoutGrid, Users2 } from 'lu
 const SideBar = () => {
     
     return (
-        <div className="w-[20%] bg-primary text-white p-3">
+        <div className="w-[20%]  text-white p-3" style={{backgroundColor:'#00763A', margin:0}}>
             <div className="h-[10rem] w-full">
                 <img src={konza} alt="Konza" className='w-full h-full object-contain' />
             </div>
