@@ -10,7 +10,7 @@ const SideBar = () => {
                 <img src={konza} alt="Konza" className='w-full h-full object-contain' />
             </div>
 
-            <div className='space-y-5 text-xl mt-7'>
+            <div className='space-y-5 text-md mt-7'>
                 <Link to='/' className='flex items-center gap-3'>
                     <LayoutDashboard />
                     <span>Dashboard</span>
