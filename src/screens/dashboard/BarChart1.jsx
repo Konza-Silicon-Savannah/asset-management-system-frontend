@@ -24,8 +24,7 @@ const BarChart1 = () => {
                     <YAxis />
                     <Tooltip />
                     <Legend
-                        wrapperStyle={{ marginTop: 40 }}
-                    />
+                        wrapperStyle={{ marginTop: 40 }}                    />
 
                     <Bar dataKey="pending" fill="#8884d8" barSize={10} />
                     <Bar dataKey="disposal" fill="#ff9999" barSize={10} />
