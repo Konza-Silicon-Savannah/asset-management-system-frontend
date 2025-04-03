@@ -15,7 +15,7 @@ const SideBar = () => {
                     <LayoutDashboard />
                     <span>Dashboard</span>
                 </Link>
-                <Link to='/assets/view' className='flex items-center gap-3'>
+                <Link to='/assets' className='flex items-center gap-3'>
                     <Folders />
                     <span>Asset management</span>
                 </Link>
