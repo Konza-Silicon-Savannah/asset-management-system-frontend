@@ -24,14 +24,14 @@ const Login = () => {
 
     return (
         <div className="min-h-vdh bg-white">
-            <div className="w-full bg-primary pl-10 flex items-center">
+            <div className="w-full bg-[#22763A] pl-10 flex items-center">
                 <div className="text-white flex items-center">
                     <img src="/images/konza.jpg" alt="konza" className="h-14 mr-5" />
                     <span className="text-xl font-medium">Asset Management System</span>
                 </div>
             </div>
             <div className="flex justify-center items-center py-12">
-                <div className="w-full max-w-md bg-primary rounded-lg p-8">
+                <div className="w-full max-w-md bg-[#22763A] rounded-lg p-8">
                     <div className="flex flex-col items-center mb-8">
                         <img src="/images/konza.jpg" alt="konza" className="h-32 mb-2"/>
                     </div>
@@ -79,7 +79,7 @@ const Login = () => {
                         </div>
 
                         <div className="flex justify-left mb-4">
-                            <button type="submit" className="bg-white text-primary px-8 py-1 rounded-3xl text-md font-medium hover:bg-gray-100">
+                            <button type="submit" className="bg-white text-[#22763A] px-8 py-1 rounded-3xl text-md font-medium hover:bg-gray-100">
                                 Login
                             </button>
                         </div>
