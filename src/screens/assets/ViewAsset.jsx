@@ -1,6 +1,8 @@
 
 import React from 'react'
-import { FaCircle, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+// import { FaCircle, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
+
 
 const ViewAsset = () => {
     return (
@@ -32,10 +34,15 @@ const ViewAsset = () => {
                             gap: '4px'
                         }} >
                       
-                            <div style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 5px', borderRadius: '40px', backdropFilter: 'blur(5px)', border: '1px solid black',backgroundColor:'#F2F4F7', width:'100px', height:'30px',fontSize:'15px',cursor: 'pointer' }}>
+                      <div className="flex gap-4 text-[24px]">
+                        <FaEye className="text-black-500 cursor-pointer" />
+                        <FaEdit className="text-green-500 cursor-pointer" />
+                        <FaTrash className="text-red-500 cursor-pointer" />
+                  </div>
+                            {/* <div style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 5px', borderRadius: '40px', backdropFilter: 'blur(5px)', border: '1px solid black',backgroundColor:'#F2F4F7', width:'100px', height:'30px',fontSize:'15px',cursor: 'pointer' }}>
     <FaCircle style={{ color: 'black', marginRight: '5px', cursor: 'pointer' }} data-bs-toggle="modal" data-bs-target="#pendingUser" />
     <span style={{ color: 'black' }}>Pending</span>
-</div> 
+</div>  */}
                         </td>
                     </tr>
                     <tr>
@@ -51,10 +58,17 @@ const ViewAsset = () => {
                             alignItems: 'center',
                             gap: '4px'
                         }} >
-                                              <div style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 5px', borderRadius: '40px', backdropFilter: 'blur(5px)', border: '1px solid black',backgroundColor:'#F2F4F7', width:'100px', height:'30px',fontSize:'15px',cursor: 'pointer' }}>
+                                              
+                                              
+                                              <div className="flex gap-4 text-[24px]">
+                                                        <FaEye className="text-black-500 cursor-pointer" />
+                                                        <FaEdit className="text-green-500 cursor-pointer" />
+                                                        <FaTrash className="text-red-500 cursor-pointer" />
+                                                </div>
+                                              {/* <div style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 5px', borderRadius: '40px', backdropFilter: 'blur(5px)', border: '1px solid black',backgroundColor:'#F2F4F7', width:'100px', height:'30px',fontSize:'15px',cursor: 'pointer' }}>
     <FaCheckCircle style={{ color: 'green', marginRight: '5px', cursor: 'pointer' }} data-bs-toggle="modal" data-bs-target="#pendingUser" />
     <span style={{ color: 'black' }}>Approved</span>
-</div>
+</div> */}
                         </td>
                     </tr>
 
@@ -71,10 +85,15 @@ const ViewAsset = () => {
                             alignItems: 'center',
                             gap: '4px'
                         }} >
-                           <div style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 5px', borderRadius: '40px', backdropFilter: 'blur(5px)', border: '1px solid black',backgroundColor:'#F2F4F7', width:'100px', height:'30px',fontSize:'15px', cursor: 'pointer'}}>
+                             <div className="flex gap-4 text-[24px]">
+                        <FaEye className="text-black-500 cursor-pointer" />
+                        <FaEdit className="text-green-500 cursor-pointer" />
+                        <FaTrash className="text-red-500 cursor-pointer" />
+                  </div>
+                           {/* <div style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 5px', borderRadius: '40px', backdropFilter: 'blur(5px)', border: '1px solid black',backgroundColor:'#F2F4F7', width:'100px', height:'30px',fontSize:'15px', cursor: 'pointer'}}>
     <FaTimesCircle style={{ color: 'red', marginRight: '5px', cursor: 'pointer' }} data-bs-toggle="modal" data-bs-target="#pendingUser" />
     <span style={{ color: 'black' }}>Rejected</span>
-</div>
+</div> */}
                         </td>
                     </tr>
 
