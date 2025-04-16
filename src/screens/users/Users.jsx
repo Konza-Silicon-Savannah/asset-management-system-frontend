@@ -199,7 +199,7 @@ const Users = () => {
                     </div>
                 </div>
             </div>
-            
+
             {/* view user form  */}
             <div className="modal fade" id="viewUser" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div className="modal-dialog" style={{ maxWidth: "60%" }}>
