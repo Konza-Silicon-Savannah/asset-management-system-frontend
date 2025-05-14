@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./user.css";
 import { FaPlus } from "react-icons/fa";
-import { LucideDelete, LucideEdit, LucideEye } from "lucide-react";
+import { LucideDelete, LucideEdit, LucideEye, LucideTrash } from "lucide-react";
 import axios from "axios";
 
 const Users = () => {
@@ -18,50 +18,22 @@ const Users = () => {
     // fetch all users
     const fetchUsers = async () => {
         try {
-            const response = await axios.get(``);
+            const response = await axios.get(`http://127.0.0.1:8000/users/`);
+            setUsers(response.data);
+
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    // delete function
+    const deleteUsers = async (id) => {
+        try {
+            const response = await axios.delete(`http://127.0.0.1:8000/users/${id}/`);
             // setUsers(response.data);
-            setUsers([
-                {
-                    id: "e0c8c846-d86f-4ec3-8efb-cc15e37aa22e",
-                    name: "Guleid Abdilatif",
-                    username: "guleid_a",
-                    email: "guleid@example.com",
-                    department: "Engineering",
-                    bio: "Passionate full-stack developer and tech enthusiast.",
-                },
-                {
-                    id: "1795c4fd-2a17-4d7f-a1a4-275f520fb4fc",
-                    name: "Amina Yusuf",
-                    username: "amina_y",
-                    email: "amina@example.com",
-                    department: "Marketing",
-                    bio: "Creative strategist with a love for branding and storytelling.",
-                },
-                {
-                    id: "b7f1d86d-e0e7-4a92-b4f4-4c41658cfb55",
-                    name: "Hassan Noor",
-                    username: "hass_n",
-                    email: "hassan@example.com",
-                    department: "Finance",
-                    bio: "Numbers guy. Excel wizard. Crypto curious.",
-                },
-                {
-                    id: "bb180295-51bb-498d-b103-9e0d5b37a91d",
-                    name: "Layla Mohamed",
-                    username: "layla_m",
-                    email: "layla@example.com",
-                    department: "Human Resources",
-                    bio: "People-first HR leader who believes in team culture.",
-                },
-                {
-                    id: "acb53e0d-66c4-4a2a-b158-5aa031e4305d",
-                    name: "Abdi Ahmed",
-                    username: "abdi_ah",
-                    email: "abdi@example.com",
-                    department: "Product",
-                    bio: "Building products that solve real problems.",
-                },
-            ]);
+            location.reload(true)
+
+
         } catch (error) {
             console.log(error);
         }
@@ -70,16 +42,8 @@ const Users = () => {
     // fetch specific user from server
     const fetchUser = async (id) => {
         try {
-            const response = await axios.get(`.../${id}`);
-            // setUser(response.data)
-            setUser({
-                id: "e0c8c846-d86f-4ec3-8efb-cc15e37aa22e",
-                name: "Guleid Abdilatif",
-                username: "guleid_a",
-                email: "guleid@example.com",
-                department: "Engineering",
-                bio: "Passionate full-stack developer and tech enthusiast.",
-            });
+            const response = await axios.get(`http://127.0.0.1:8000/users/${id}/`);
+            setUser(response.data)
             setIsEditMode(true);
         } catch (error) {
             console.log(error);
@@ -94,8 +58,10 @@ const Users = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // await axios.post("", user);
-            console.log(user);
+            // 
+            const res = user.id ? await axios.put(`http://127.0.0.1:8000/users/${user.id}/`, user) : await axios.post("http://127.0.0.1:8000/users/", user);
+            // console.log(user);
+            location.reload(true)
         } catch (error) {
             console.log(error);
         }
@@ -139,7 +105,7 @@ const Users = () => {
                                 }}>
                                 <LucideEye style={{ color: "green", cursor: "pointer" }} data-bs-toggle="modal" data-bs-target="#viewUser" />
                                 <LucideEdit style={{ color: "black", cursor: "pointer" }} data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => fetchUser(user.id)} />
-                                <LucideDelete style={{ color: "red", cursor: "pointer" }} />
+                                <LucideTrash style={{ color: "red", cursor: "pointer" }} onClick={() => deleteUsers(user.id)}/>
                             </td>
                         </tr>
                     ))}
@@ -190,7 +156,7 @@ const Users = () => {
                                     <button type="button" className="btn btn-danger" data-bs-dismiss="modal">
                                         Close
                                     </button>
-                                    <button type="submit" className="btn btn-success" data-bs-dismiss="modal">
+                                    <button type="submit" className="btn btn-success">
                                         {isEditMode ? "Update" : "Save changes"}
                                     </button>
                                 </div>
