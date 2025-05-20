@@ -1,12 +1,24 @@
 import { useState } from 'react';
+import axios from "axios";
+import CustomAlert from "../helpers/CustomAlert.jsx";
+
+const api_url = import.meta.env.VITE_API_URL;
 
 const Login = () => {
-
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertType, setAlertType] = useState('success');
+    const [alertMessage, setAlertMessage] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [credentials, setCredentials] = useState({
         email: '',
         password: ''
     });
+
+    const handleShowAlert = (type, message) => {
+        setAlertType(type);
+        setAlertMessage(message);
+        setShowAlert(true);
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -16,20 +28,36 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            console.log(credentials);
+            const res = await axios.post(`${api_url}/login`, credentials);
+            handleShowAlert("success", "Logged in successfully. Redirecting...");
+            localStorage.setItem('AuthToken', res.data.token);
+            setTimeout(() => {
+                location.href = "/"
+            }, 1500);
         } catch (error) {
-            console.log(error)
+            handleShowAlert("error", error.response.data.message)
         }
     };
 
     return (
         <div className="min-h-vdh bg-white">
+
+            {showAlert && (
+                <CustomAlert
+                    type={alertType}
+                    message={alertMessage}
+                    onClose={() => setShowAlert(false)}
+                    duration={2000}
+                />
+            )}
+
             <div className="w-full bg-[#22763A] pl-10 flex items-center">
                 <div className="text-white flex items-center">
                     <img src="/images/konza.jpg" alt="konza" className="h-14 mr-5" />
                     <span className="text-xl font-medium">Asset Management System</span>
                 </div>
             </div>
+
             <div className="flex justify-center items-center py-12">
                 <div className="w-full max-w-md bg-[#22763A] rounded-lg p-8">
                     <div className="flex flex-col items-center mb-8">
