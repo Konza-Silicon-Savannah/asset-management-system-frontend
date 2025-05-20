@@ -17,15 +17,12 @@ const Login = () => {
         password: ''
     });
 
-<<<<<<< HEAD
-=======
     const handleShowAlert = (type, message) => {
         setAlertType(type);
         setAlertMessage(message);
         setShowAlert(true);
     };
 
->>>>>>> 59815c0de7f68becea1e1a46c4ddc3a582b362b3
     const handleChange = (e) => {
         const { name, value } = e.target;
         setCredentials({...credentials, [name]: value });
