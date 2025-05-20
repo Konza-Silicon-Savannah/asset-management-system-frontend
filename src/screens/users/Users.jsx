@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from "react";
-import "./user.css";
-import { FaPlus } from "react-icons/fa";
-import { LucideDelete, LucideEdit, LucideEye, LucideTrash } from "lucide-react";
-import axios from "axios";
-
-const Users = () => {
-=======
 import { useEffect, useState } from "react";
 import "./user.css";
 import { FaPlus } from "react-icons/fa";
@@ -21,7 +12,6 @@ const Users = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [alertType, setAlertType] = useState('success');
   const [alertMessage, setAlertMessage] = useState('');
->>>>>>> 59815c0de7f68becea1e1a46c4ddc3a582b362b3
   const [user, setUser] = useState({
     name: "",
     username: "",
@@ -38,20 +28,11 @@ const Users = () => {
     state: "",
     country: "",
     role: "",
-<<<<<<< HEAD
-    status: "inactive",
-=======
     status: "",
->>>>>>> 59815c0de7f68becea1e1a46c4ddc3a582b362b3
   });
   const [users, setUsers] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
 
-<<<<<<< HEAD
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get(`http://127.0.0.1:8000/users/`);
-=======
   const handleShowAlert = (type, message) => {
     setAlertType(type);
     setAlertMessage(message);
@@ -61,7 +42,6 @@ const Users = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get(`${api_url}/users/`);
->>>>>>> 59815c0de7f68becea1e1a46c4ddc3a582b362b3
       setUsers(response.data);
     } catch (error) {
       console.log(error);
@@ -70,11 +50,7 @@ const Users = () => {
 
   const deleteUsers = async (id) => {
     try {
-<<<<<<< HEAD
-      const response = await axios.delete(`http://127.0.0.1:8000/users/${id}/`);
-=======
       await axios.delete(`${api_url}/users/${id}/`);
->>>>>>> 59815c0de7f68becea1e1a46c4ddc3a582b362b3
       // setUsers(response.data);
       location.reload(true);
     } catch (error) {
@@ -84,11 +60,7 @@ const Users = () => {
 
   const fetchUser = async (id) => {
     try {
-<<<<<<< HEAD
-      const response = await axios.get(`http://127.0.0.1:8000/users/${id}/`);
-=======
       const response = await axios.get(`${api_url}/users/${id}/`);
->>>>>>> 59815c0de7f68becea1e1a46c4ddc3a582b362b3
       setUser(response.data);
       setIsEditMode(true);
     } catch (error) {
@@ -103,16 +75,6 @@ const Users = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-<<<<<<< HEAD
-      //
-      const res = user.id
-        ? await axios.put(`http://127.0.0.1:8000/users/${user.id}/`, user)
-        : await axios.post("http://127.0.0.1:8000/users/", user);
-
-      location.reload(true);
-    } catch (error) {
-      console.log(error);
-=======
       user.id
         ? await axios.put(`${api_url}/users/${user.id}/`, user)
         : await axios.post(`${api_url}/users/`, user);
@@ -124,7 +86,6 @@ const Users = () => {
 
     } catch (error) {
       handleShowAlert("error", FormatErrors(error.response.data))
->>>>>>> 59815c0de7f68becea1e1a46c4ddc3a582b362b3
     }
   };
 
@@ -234,8 +195,6 @@ const Users = () => {
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-<<<<<<< HEAD
-=======
         {showAlert && (
             <CustomAlert
                 type={alertType}
@@ -244,7 +203,6 @@ const Users = () => {
                 duration={2000}
             />
         )}
->>>>>>> 59815c0de7f68becea1e1a46c4ddc3a582b362b3
         <div className="modal-dialog" style={{ maxWidth: "80%" }}>
           <div className="modal-content">
             <div className="modal-header">
