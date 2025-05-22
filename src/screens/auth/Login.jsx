@@ -28,7 +28,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post(`${api_url}/login`, credentials);
+            const res = await axios.post(`${api_url}/auth`, credentials);
             handleShowAlert("success", "Logged in successfully. Redirecting...");
             localStorage.setItem('AuthToken', res.data.token);
             setTimeout(() => {

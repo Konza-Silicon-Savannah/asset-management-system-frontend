@@ -9,6 +9,7 @@ import Users from "./screens/users/Users";
 import Reports from "./screens/reports/Reports";
 import SideBar from "./screens/partials/SideBar";
 import "choices.js/public/assets/styles/choices.min.css";
+import ProtectedRoute from "./screens/ProtectedRoute.jsx";
 
 const App = () => {
     const location = useLocation();
@@ -20,12 +21,36 @@ const App = () => {
             <div className="w-full h-70rem overflow-y-scroll">
                 <Routes>
                     <Route path="/signin" element={<Login />} />
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/assets" element={<ViewAsset />} />
-                    <Route path="/assets/new" element={<AssetForm />} />
-                    <Route path="/assets/request" element={<AssetRequest />} />
-                    <Route path="/users" element={<Users />} />
-                    <Route path="/reports" element={<Reports />} />
+                    <Route path="/" element={
+                        <ProtectedRoute>
+                            <Dashboard />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/assets" element={
+                        <ProtectedRoute>
+                            <ViewAsset />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/assets/new" element={
+                        <ProtectedRoute>
+                            <AssetForm />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/assets/request" element={
+                        <ProtectedRoute>
+                            <AssetRequest />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/users" element={
+                        <ProtectedRoute>
+                            <Users />
+                        </ProtectedRoute>
+                    } />
+                    <Route path="/reports" element={
+                        <ProtectedRoute>
+                            <Reports />
+                        </ProtectedRoute>
+                    } />
                 </Routes>
             </div>
         </div>
