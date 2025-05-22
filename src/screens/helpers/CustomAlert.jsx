@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AlertCircle, CheckCircle, Info, X, AlertTriangle } from 'lucide-react';
 
-const CustomAlert = ({message, type = 'info', duration = 5000, onClose, show = true}) => {
+const CustomAlert = ({message, type = 'info', duration = 15000, onClose, show = true}) => {
     const [isVisible, setIsVisible] = useState(show);
 
     useEffect(() => {

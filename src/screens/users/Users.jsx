@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "./user.css";
 import { FaPlus } from "react-icons/fa";
 import { LucideEdit, LucideEye, LucideTrash } from "lucide-react";
 import axios from "axios";
@@ -7,6 +6,7 @@ import CustomAlert from "../helpers/CustomAlert.jsx";
 import FormatErrors from "../helpers/FormatErrors.jsx";
 
 const api_url = import.meta.env.VITE_API_URL;
+const token = localStorage.getItem("AuthToken");
 
 const Users = () => {
   const [showAlert, setShowAlert] = useState(false);
@@ -41,7 +41,11 @@ const Users = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`${api_url}/users/`);
+      const response = await axios.get(`${api_url}/users/`,{
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      });
       setUsers(response.data);
     } catch (error) {
       console.log(error);
@@ -50,7 +54,11 @@ const Users = () => {
 
   const deleteUsers = async (id) => {
     try {
-      await axios.delete(`${api_url}/users/${id}/`);
+      await axios.delete(`${api_url}/users/${id}/`,{
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      });
       // setUsers(response.data);
       location.reload(true);
     } catch (error) {
@@ -60,7 +68,11 @@ const Users = () => {
 
   const fetchUser = async (id) => {
     try {
-      const response = await axios.get(`${api_url}/users/${id}/`);
+      const response = await axios.get(`${api_url}/users/${id}/`,{
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      });
       setUser(response.data);
       setIsEditMode(true);
     } catch (error) {
@@ -75,9 +87,14 @@ const Users = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const config = {
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      }
       user.id
-        ? await axios.put(`${api_url}/users/${user.id}/`, user)
-        : await axios.post(`${api_url}/users/`, user);
+        ? await axios.put(`${api_url}/users/${user.id}/`, user, config)
+        : await axios.post(`${api_url}/users/`, user, config);
 
       handleShowAlert("success", user.id ? "Successfully updated user details" : "Successfully added a new user");
       setTimeout(() => {
