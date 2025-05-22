@@ -109,6 +109,7 @@ const Users = () => {
   const toggleUserStatus = async (id, currentStatus) => {
     try {
       const newStatus = currentStatus === "active" ? "inactive" : "active";
+      const response = await axios.patch(`http://127.0.0.1:8000/users/${id}/`, {
       const response = await axios.patch(`${api_url}/users/${id}/`, {
         status: newStatus,
       });
