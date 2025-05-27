@@ -5,11 +5,11 @@ import '../../src/App.css'
 function LandingPage() {
     return (
         <div>
-            <nav style={{ display: 'flex', justifyContent: "space-around", alignItems: "center", backgroundColor: '#00763A', padding: "10px 30px" }}>
+            <nav style={{ display: 'fixed', width:'100%', justifyContent: "space-between", alignItems: "center", backgroundColor: '#00763A', padding: "10px 30px" }}>
                 <img src="images/konza.jpg" alt="" width="40px" />
                 <ul>
                     <li style={{ display: "flex", gap: '30px', color: "white" }}>
-                        <Link>Privcy Policy</Link>
+                        <Link>Privacy Policy</Link>
                     </li>
                 </ul>
             </nav>
