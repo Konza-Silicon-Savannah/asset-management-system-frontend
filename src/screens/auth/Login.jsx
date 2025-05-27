@@ -32,7 +32,7 @@ const Login = () => {
             handleShowAlert("success", "Logged in successfully. Redirecting...");
             localStorage.setItem('AuthToken', res.data.token);
             setTimeout(() => {
-                location.href = "/"
+                location.href = "/dashboard"
             }, 1500);
         } catch (error) {
             handleShowAlert("error", error.response.data.message)
