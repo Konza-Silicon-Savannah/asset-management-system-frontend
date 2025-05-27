@@ -8,8 +8,8 @@ const SideBar = () => {
     const location = useLocation();
 
     const isActive = (path) => {
-        if (path === "/") {
-            return location.pathname === "/";
+        if (path === "/dashboard") {
+            return location.pathname === "/dashboard";
         }
         return location.pathname.startsWith(path);
     };
@@ -29,7 +29,7 @@ const SideBar = () => {
             </div>
 
             <div className="space-y-5 text-md mt-7">
-                <Link to="/" className={`flex items-center gap-3 p-2 rounded-lg transition-all ${isActive("/") ? "bg-green-200 bg-opacity-20" : "hover:bg-green-200 hover:bg-opacity-10"}`}>
+                <Link to="/dashboard" className={`flex items-center gap-3 p-2 rounded-lg transition-all ${isActive("/") ? "bg-green-200 bg-opacity-20" : "hover:bg-green-200 hover:bg-opacity-10"}`}>
                     <LayoutDashboard className={collapsed ? "mx-auto" : ""} />
                     {!collapsed && <span>Dashboard</span>}
                 </Link>

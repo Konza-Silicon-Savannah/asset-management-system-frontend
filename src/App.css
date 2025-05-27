@@ -49,3 +49,54 @@
 .dYrfwz > input {
   padding: 0 !important;
 }
+.col{
+  width: 200px;
+}
+.col{  
+  width:250px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  flex-direction:column ;
+  gap: 18px;
+}
+.col h1{
+  font-size: 21px;
+  font-weight: bolder;
+
+}
+.getstarted-btn{
+  background-color: #00763A;
+  padding: 10px 30px;
+  color: white;
+  border-radius: 30px;
+margin-bottom: 30px;
+
+}
+.getstarted-btn:hover{
+  letter-spacing: 3px;
+  transition: 0.5s;
+}
+.col:hover{
+  transform: translateY(-30px);
+  cursor: pointer;
+  transition: 1s;
+}
+header{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 80vh;
+}
+@media(max-width:900px){
+  .col{
+   padding: 30px;
+    width: 100%;
+  }
+  header{
+    height: auto !important;
+     flex-direction: column;
+     
+  }
+
+}

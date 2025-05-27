@@ -10,10 +10,11 @@ import Reports from "./screens/reports/Reports";
 import SideBar from "./screens/partials/SideBar";
 import "choices.js/public/assets/styles/choices.min.css";
 import ProtectedRoute from "./screens/ProtectedRoute.jsx";
+import LandingPage from "./screens/LandingPage.jsx";
 
 const App = () => {
     const location = useLocation();
-    const hidePartials = ["/signin"].includes(location.pathname);
+    const hidePartials = ["/signin", "/"].includes(location.pathname);
 
     return (
         <div className="overflow-x-hidden h-dvh overflow-hidden flex">
@@ -21,10 +22,11 @@ const App = () => {
             <div className="w-full h-70rem overflow-y-scroll">
                 <Routes>
                     <Route path="/signin" element={<Login />} />
-                    <Route path="/" element={
-                        <ProtectedRoute>
+                    <Route path="/" element={<LandingPage />} />
+                    <Route path="/dashboard" element={
+                        // <ProtectedRoute>
                             <Dashboard />
-                        </ProtectedRoute>
+                        // </ProtectedRoute>
                     } />
                     <Route path="/assets" element={
                         <ProtectedRoute>
