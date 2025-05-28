@@ -21,12 +21,12 @@ const App = () => {
             {!hidePartials && (<SideBar />)}
             <div className="w-full h-70rem overflow-y-scroll">
                 <Routes>
-                    <Route path="/signin" element={<Login />} />
                     <Route path="/" element={<LandingPage />} />
+                    <Route path="/signin" element={<Login />} />
                     <Route path="/dashboard" element={
-                        // <ProtectedRoute>
+                        <ProtectedRoute>
                             <Dashboard />
-                        // </ProtectedRoute>
+                        </ProtectedRoute>
                     } />
                     <Route path="/assets" element={
                         <ProtectedRoute>

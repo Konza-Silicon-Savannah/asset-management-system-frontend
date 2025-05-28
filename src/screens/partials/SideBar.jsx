@@ -1,7 +1,16 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import konza from "/images/konza.jpg";
-import { Folders, GitPullRequest, LayoutDashboard, LayoutGrid, Users2, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+    Folders,
+    GitPullRequest,
+    LayoutDashboard,
+    LayoutGrid,
+    Users2,
+    ChevronLeft,
+    ChevronRight,
+    BarChart3
+} from "lucide-react";
 
 const SideBar = () => {
     const [collapsed, setCollapsed] = useState(false);
@@ -29,7 +38,7 @@ const SideBar = () => {
             </div>
 
             <div className="space-y-5 text-md mt-7">
-                <Link to="/dashboard" className={`flex items-center gap-3 p-2 rounded-lg transition-all ${isActive("/") ? "bg-green-200 bg-opacity-20" : "hover:bg-green-200 hover:bg-opacity-10"}`}>
+                <Link to="/dashboard" className={`flex items-center gap-3 p-2 rounded-lg transition-all ${isActive("/dashboard") ? "bg-green-200 bg-opacity-20" : "hover:bg-green-200 hover:bg-opacity-10"}`}>
                     <LayoutDashboard className={collapsed ? "mx-auto" : ""} />
                     {!collapsed && <span>Dashboard</span>}
                 </Link>
@@ -47,6 +56,11 @@ const SideBar = () => {
                 <Link to="/users" className={`flex items-center gap-3 p-2 rounded-lg transition-all ${isActive("/users") ? "bg-green-200 bg-opacity-20" : "hover:bg-green-200 hover:bg-opacity-10"}`}>
                     <Users2 className={collapsed ? "mx-auto" : ""} />
                     {!collapsed && <span>User Management</span>}
+                </Link>
+
+                <Link to="/reports" className={`flex items-center gap-3 p-2 rounded-lg transition-all ${isActive("/reports") ? "bg-green-200 bg-opacity-20" : "hover:bg-green-200 hover:bg-opacity-10"}`}>
+                    <BarChart3 className={collapsed ? "mx-auto" : ""} />
+                    {!collapsed && <span>Reports</span>}
                 </Link>
             </div>
         </div>
