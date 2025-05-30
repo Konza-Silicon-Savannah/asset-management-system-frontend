@@ -32,7 +32,11 @@ const Login = () => {
             handleShowAlert("success", "Logged in successfully. Redirecting...");
             localStorage.setItem('AuthToken', res.data.token);
             setTimeout(() => {
-                location.href = "/dashboard"
+                if(res.data.is_admin || res.data.is_superuser){
+                    location.href = "/dashboard"
+                }else{
+                    location.href = "/user-portal"
+                }
             }, 1500);
         } catch (error) {
             handleShowAlert("error", error.response.data.message)
@@ -47,11 +51,11 @@ const Login = () => {
                     type={alertType}
                     message={alertMessage}
                     onClose={() => setShowAlert(false)}
-                    duration={2000}
+                    duration={5000}
                 />
             )}
 
-            <div className="w-full bg-[#22763A] pl-10 flex items-center">
+            <div className="w-full bg-[#00763A] pl-10 flex items-center">
                 <div className="text-white flex items-center">
                     <img src="/images/konza.jpg" alt="konza" className="h-14 mr-5" />
                     <span className="text-xl font-medium">Asset Management System</span>
@@ -59,7 +63,7 @@ const Login = () => {
             </div>
 
             <div className="flex justify-center items-center py-12">
-                <div className="w-full max-w-md bg-[#22763A] rounded-lg p-8">
+                <div className="w-full max-w-md bg-[#00763A] rounded-lg p-8">
                     <div className="flex flex-col items-center mb-8">
                         <img src="/images/konza.jpg" alt="konza" className="h-32 mb-2"/>
                     </div>
@@ -106,13 +110,13 @@ const Login = () => {
                             </div>
                         </div>
 
-                        <div className="flex justify-left mb-4">
-                            <button type="submit" className="bg-white text-[#22763A] px-8 py-1 rounded-3xl text-md font-medium hover:bg-gray-100">
+                        <div className="flex justify-center mb-4">
+                            <button type="submit" className="bg-white text-[#00763A] px-8 py-1 rounded-3xl text-md font-medium hover:bg-gray-100">
                                 Login
                             </button>
                         </div>
 
-                        <div className="text-white text-xs">
+                        <div className="text-white text-xs text-center">
                             <a href="#" className="hover:underline">Forgot Password?</a>
                         </div>
                     </form>
