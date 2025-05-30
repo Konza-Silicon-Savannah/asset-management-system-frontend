@@ -11,10 +11,43 @@ import SideBar from "./screens/partials/SideBar";
 import "choices.js/public/assets/styles/choices.min.css";
 import ProtectedRoute from "./screens/ProtectedRoute.jsx";
 import LandingPage from "./screens/LandingPage.jsx";
+import UserPortal from "./screens/userPortal/UserPortal.jsx";
+import Profile from "./screens/userPortal/Profile.jsx";
+import axios from "axios";
+import {useEffect} from "react";
+
+const api_url = import.meta.env.VITE_API_URL;
+const token = localStorage.getItem("AuthToken");
 
 const App = () => {
     const location = useLocation();
-    const hidePartials = ["/signin", "/"].includes(location.pathname);
+    const hidePartials = ["/signin", "/", "/user-portal", "/profile"].includes(location.pathname);
+
+    const fetchUser = async () => {
+        try {
+            const response = await axios.get(`${api_url}/auth`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if(["/", "/signin"].includes(location.pathname)){
+                if(response.data.is_admin || response.data.is_superuser){
+                    window.location.href = "/dashboard"
+                }else{
+                    window.location.href = "/user-portal"
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        if(token){
+            fetchUser();
+        }
+    }, []);
 
     return (
         <div className="overflow-x-hidden h-dvh overflow-hidden flex">
@@ -53,6 +86,16 @@ const App = () => {
                             <Reports />
                         </ProtectedRoute>
                     } />
+                    <Route path="/user-portal" element={
+                        <ProtectedRoute>
+                            <UserPortal/>
+                        </ProtectedRoute>
+                    }/>
+                    <Route path="/profile" element={
+                        <ProtectedRoute>
+                            <Profile/>
+                        </ProtectedRoute>
+                    }/>
                 </Routes>
             </div>
         </div>
