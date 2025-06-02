@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import "./ViewAsset.css";
 import {
   FaEye,
   FaEdit,
@@ -6,9 +7,9 @@ import {
   FaPlus,
   FaSearch,
   FaTimes,
+  FaSpinner,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-// import
 
 const ViewAsset = () => {
   const navigate = useNavigate();
@@ -16,42 +17,34 @@ const ViewAsset = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [assets, setAssets] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const assets = [
-    {
-      name: "Laptop",
-      assetTag: "DC0001",
-      model: "HP",
-      supplier: "Huawei",
-      type: "Electronic",
-      status: "Deployed",
-      serialNo: "SN48392HPLP",
-      location: "Main Office, Floor 3",
-      purchaseCost: "$1,200.00",
-    },
-    {
-      name: "Desktop",
-      assetTag: "ICM001",
-      model: "Lenovo",
-      supplier: "Microsoft",
-      type: "Electronic",
-      status: "Pending",
-      serialNo: "LEN293847DT",
-      location: "IT Department",
-      purchaseCost: "$850.00",
-    },
-    {
-      name: "Laptop",
-      assetTag: "Complex007",
-      model: "Macbook",
-      supplier: "Apple",
-      type: "Electronic",
-      status: "Undeployed",
-      serialNo: "MAC8273PRO",
-      location: "Storage Room B",
-      purchaseCost: "$2,400.00",
-    },
-  ];
+  const API_BASE_URL = "http://127.0.0.1:8000/";
+
+  // Fetch assets from backend
+  useEffect(() => {
+    const fetchAssets = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`${API_BASE_URL}/assets/`);
+        if (response.ok) {
+          const data = await response.json();
+          setAssets(data.results || data); // Handle pagination if implemented
+        } else {
+          setError("Failed to fetch assets");
+        }
+      } catch (error) {
+        console.error("Error fetching assets:", error);
+        setError("Network error. Please check your connection.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAssets();
+  }, []);
 
   const handleViewAsset = (asset) => {
     setSelectedAsset(asset);
@@ -63,24 +56,95 @@ const ViewAsset = () => {
     setSelectedAsset(null);
   };
 
+  const handleDeleteAsset = async (assetId) => {
+    if (window.confirm("Are you sure you want to delete this asset?")) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/assets/${assetId}/`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            // Add CSRF token if required
+            // 'X-CSRFToken': getCookie('csrftoken'),
+          },
+        });
+
+        if (response.ok) {
+          // Remove asset from local state
+          setAssets(assets.filter((asset) => asset.id !== assetId));
+          alert("Asset deleted successfully!");
+        } else {
+          alert("Failed to delete asset");
+        }
+      } catch (error) {
+        console.error("Error deleting asset:", error);
+        alert("Network error. Please try again.");
+      }
+    }
+  };
+
   const filteredAssets = assets.filter((asset) => {
     const matchesFilter =
       selectedFilter === "All" ||
-      (selectedFilter === "All deployed" && asset.status === "Deployed") ||
-      (selectedFilter === "Pending" && asset.status === "Pending") ||
-      (selectedFilter === "Archived" && asset.status === "Archived") ||
-      (selectedFilter === "Undeployed" && asset.status === "Undeployed");
+      (selectedFilter === "New" && asset.status === "New") ||
+      (selectedFilter === "Disposal" && asset.status === "Disposal") ||
+      (selectedFilter === "Good" && asset.status === "Good") ||
+      (selectedFilter === "Damaged" && asset.status === "Damaged");
 
     const matchesSearch =
       searchTerm === "" ||
-      asset.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      asset.assetTag.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      asset.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      asset.supplier.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      asset.type.toLowerCase().includes(searchTerm.toLowerCase());
+      asset.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      asset.asset_tag?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      asset.model?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      asset.supplier?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      asset.asset_type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      asset.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      asset.location?.toLowerCase().includes(searchTerm.toLowerCase());
 
     return matchesFilter && matchesSearch;
   });
+
+  const formatCurrency = (amount) => {
+    if (!amount) return "N/A";
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(amount);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString();
+  };
+
+  if (loading) {
+    return (
+      <div
+        className="p-5 d-flex justify-content-center align-items-center"
+        style={{ minHeight: "400px" }}
+      >
+        <div className="text-center">
+          <FaSpinner className="fa-spin" size={32} />
+          <p className="mt-3">Loading assets...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-5">
+        <div className="alert alert-danger" role="alert">
+          <strong>Error:</strong> {error}
+          <button
+            className="btn btn-sm btn-outline-danger ms-3"
+            onClick={() => window.location.reload()}
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-5">
@@ -105,10 +169,10 @@ const ViewAsset = () => {
             style={{ width: "150px" }}
           >
             <option value="All">All</option>
-            <option value="All deployed">All deployed</option>
-            <option value="Pending">Pending</option>
-            <option value="Archived">Archived</option>
-            <option value="Undeployed">Undeployed</option>
+            <option value="New">New</option>
+            <option value="Disposal">Disposal</option>
+            <option value="Good">Good</option>
+            <option value="Damaged">Damaged</option>
           </select>
         </div>
         <button
@@ -116,52 +180,81 @@ const ViewAsset = () => {
           className="btn btn-success d-flex align-items-center gap-2"
         >
           <FaPlus />
-          Add
+          Add Asset
         </button>
       </div>
 
-      <table className="table table-hover">
-        <thead>
-          <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Asset Tag</th>
-            <th scope="col">Model</th>
-            <th scope="col">Supplier</th>
-            <th scope="col">Type</th>
-            <th scope="col">Status</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredAssets.map((asset, index) => (
-            <tr key={index}>
-              <th>{asset.name}</th>
-              <td>{asset.assetTag}</td>
-              <td>{asset.model}</td>
-              <td>{asset.supplier}</td>
-              <td>{asset.type}</td>
-              <td>{asset.status}</td>
-              <td
-                style={{
-                  fontSize: "30px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "4px",
-                }}
-              >
-                <div className="flex gap-4 text-[24px]">
-                  <FaEye
-                    className="text-green-500 cursor-pointer"
-                    onClick={() => handleViewAsset(asset)}
-                  />
-                  <FaEdit className="text-green-500 cursor-pointer" />
-                  <FaTrash className="text-red-500 cursor-pointer" />
-                </div>
-              </td>
+      <div className="table-responsive">
+        <table className="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Asset Tag</th>
+              <th scope="col">Model</th>
+              <th scope="col">Department</th>
+              <th scope="col">Location</th>
+              <th scope="col">Status</th>
+              <th scope="col">Purchase Cost</th>
+              <th scope="col">Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredAssets.map((asset) => (
+              <tr key={asset.id}>
+                <th>{asset.name}</th>
+                <td>{asset.asset_tag || "N/A"}</td>
+                <td>{asset.model || "N/A"}</td>
+                <td>{asset.department || "N/A"}</td>
+                <td>{asset.location || "N/A"}</td>
+                <td>
+                  <span
+                    className={`badge ${
+                      asset.status === "Deployed"
+                        ? "bg-success"
+                        : asset.status === "Pending"
+                        ? "bg-warning"
+                        : asset.status === "Undeployed"
+                        ? "bg-secondary"
+                        : "bg-danger"
+                    }`}
+                  >
+                    {asset.status || "Unknown"}
+                  </span>
+                </td>
+                <td>{formatCurrency(asset.purchase_cost)}</td>
+                <td>
+                  <div className="d-flex gap-2">
+                    <FaEye
+                      className="text-success cursor-pointer"
+                      onClick={() => handleViewAsset(asset)}
+                      title="View Details"
+                      style={{ cursor: "pointer" }}
+                    />
+                    <FaEdit
+                      className="text-primary cursor-pointer"
+                      title="Edit Asset"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => navigate(`/assets/edit/${asset.id}`)}
+                    />
+                    <FaTrash
+                      className="text-danger cursor-pointer"
+                      title="Delete Asset"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleDeleteAsset(asset.id)}
+                    />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {filteredAssets.length === 0 && !loading && (
+        <div className="text-center py-4">
+          <p className="text-muted">No assets found matching your criteria.</p>
+        </div>
+      )}
 
       {showDetailModal && selectedAsset && (
         <div
@@ -169,7 +262,7 @@ const ViewAsset = () => {
           tabIndex="-1"
           style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
         >
-          <div className="modal-dialog modal-lg">
+          <div className="modal-dialog modal-xl">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">
@@ -182,49 +275,88 @@ const ViewAsset = () => {
                 ></button>
               </div>
               <div className="modal-body">
-                <div className="row mb-3">
+                <div className="row">
+                  {/* Basic Information */}
                   <div className="col-md-6">
+                    <h6 className="fw-bold mb-3 text-green-700">
+                      Basic Information
+                    </h6>
                     <div className="mb-3">
-                      <strong>Name:</strong> {selectedAsset.name}
+                      <strong>Asset Name:</strong> {selectedAsset.name}
                     </div>
                     <div className="mb-3">
-                      <strong>Asset Tag:</strong> {selectedAsset.assetTag}
+                      <strong>Asset Tag:</strong>{" "}
+                      {selectedAsset.asset_tag || "N/A"}
                     </div>
                     <div className="mb-3">
-                      <strong>Model:</strong> {selectedAsset.model}
+                      <strong>Serial Number:</strong>{" "}
+                      {selectedAsset.serial_number || "N/A"}
                     </div>
                     <div className="mb-3">
-                      <strong>Supplier:</strong> {selectedAsset.supplier}
+                      <strong>Model:</strong> {selectedAsset.model || "N/A"}
                     </div>
                     <div className="mb-3">
-                      <strong>Type:</strong> {selectedAsset.type}
+                      <strong>Type:</strong> {selectedAsset.asset_type || "N/A"}
                     </div>
                   </div>
+
+                  {/* Purchase & Location Information */}
                   <div className="col-md-6">
+                    <h6 className="fw-bold mb-3 text-green-700">
+                      Purchase & Location
+                    </h6>
                     <div className="mb-3">
-                      <strong>Status:</strong> {selectedAsset.status}
+                      <strong>Purchase Date:</strong>{" "}
+                      {formatDate(selectedAsset.purchase_date)}
                     </div>
                     <div className="mb-3">
-                      <strong>Serial No:</strong> {selectedAsset.serialNo}
-                    </div>
-                    <div className="mb-3">
-                      <strong>Location:</strong> {selectedAsset.location}
+                      <strong>Supplier:</strong>{" "}
+                      {selectedAsset.supplier || "N/A"}
                     </div>
                     <div className="mb-3">
                       <strong>Purchase Cost:</strong>{" "}
-                      {selectedAsset.purchaseCost}
+                      {formatCurrency(selectedAsset.purchase_cost)}
+                    </div>
+                    <div className="mb-3">
+                      <strong>Location:</strong>{" "}
+                      {selectedAsset.location || "N/A"}
+                    </div>
+                    <div className="mb-3">
+                      <strong>Department:</strong>{" "}
+                      {selectedAsset.department || "N/A"}
+                    </div>
+                  </div>
+
+                  {/* Status & Description */}
+                  <div className="col-12 mt-3">
+                    <h6 className="fw-bold mb-3 text-green-700">
+                      Status & Description
+                    </h6>
+                    <div className="mb-3">
+                      <strong>Status:</strong>
+                      <span
+                        className={`badge ms-2 ${
+                          selectedAsset.status === "Deployed"
+                            ? "bg-success"
+                            : selectedAsset.status === "Pending"
+                            ? "bg-warning"
+                            : selectedAsset.status === "Undeployed"
+                            ? "bg-secondary"
+                            : "bg-danger"
+                        }`}
+                      >
+                        {selectedAsset.status || "Unknown"}
+                      </span>
+                    </div>
+                    <div className="mb-3">
+                      <strong>Description:</strong>
+                      <p className="mt-2 p-3 bg-light rounded">
+                        {selectedAsset.description ||
+                          "No description available"}
+                      </p>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={handleCloseModal}
-                >
-                  Close
-                </button>
               </div>
             </div>
           </div>
