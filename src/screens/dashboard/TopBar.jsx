@@ -69,7 +69,7 @@ const TopBar = () => {
                         <ul className="list-unstyled m-0 p-2">
                             <li className="py-2 px-3 hover-bg d-flex gap-3" style={{ cursor: 'pointer' }}>
                                 <User size={18} />
-                                <a href="/profile" style={{ textDecoration: 'none', color: '#333' }}>Profile</a>
+                                <a href="/admin-profile" style={{ textDecoration: 'none', color: '#333' }}>Profile</a>
                             </li>
                             <li className="py-2 px-3 hover-bg d-flex gap-3" style={{ cursor: 'pointer' }}>
                                 <LogOut size={18} />
