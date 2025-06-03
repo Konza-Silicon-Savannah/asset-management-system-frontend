@@ -10,6 +10,12 @@ import {
   FaSpinner,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import formatCurrency from "../helpers/Currency.jsx";
+import formatDate from "../helpers/DateFormat.jsx";
+import axios from "axios";
+
+const api_url = import.meta.env.VITE_API_URL;
+const token = localStorage.getItem("AuthToken");
 
 const ViewAsset = () => {
   const navigate = useNavigate();
@@ -21,14 +27,16 @@ const ViewAsset = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const API_BASE_URL = "http://127.0.0.1:8000/";
-
   // Fetch assets from backend
   useEffect(() => {
     const fetchAssets = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${API_BASE_URL}/assets/`);
+        const response = await fetch(`${api_url}/assets/`,{
+          headers:{
+            Authorization: `Bearer ${token}`
+          }
+        });
         if (response.ok) {
           const data = await response.json();
           setAssets(data.results || data); // Handle pagination if implemented
@@ -59,22 +67,13 @@ const ViewAsset = () => {
   const handleDeleteAsset = async (assetId) => {
     if (window.confirm("Are you sure you want to delete this asset?")) {
       try {
-        const response = await fetch(`${API_BASE_URL}/assets/${assetId}/`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            // Add CSRF token if required
-            // 'X-CSRFToken': getCookie('csrftoken'),
-          },
+        await axios.delete(`${api_url}/assets/${assetId}/`, {
+          headers:{
+            Authorization: `Bearer ${token}`
+          }
         });
-
-        if (response.ok) {
-          // Remove asset from local state
-          setAssets(assets.filter((asset) => asset.id !== assetId));
-          alert("Asset deleted successfully!");
-        } else {
-          alert("Failed to delete asset");
-        }
+        setAssets(assets.filter((asset) => asset.id !== assetId));
+        alert("Asset deleted successfully!");
       } catch (error) {
         console.error("Error deleting asset:", error);
         alert("Network error. Please try again.");
@@ -85,10 +84,10 @@ const ViewAsset = () => {
   const filteredAssets = assets.filter((asset) => {
     const matchesFilter =
       selectedFilter === "All" ||
-      (selectedFilter === "New" && asset.status === "New") ||
-      (selectedFilter === "Disposal" && asset.status === "Disposal") ||
-      (selectedFilter === "Good" && asset.status === "Good") ||
-      (selectedFilter === "Damaged" && asset.status === "Damaged");
+      (selectedFilter === "new" && asset.status === "new") ||
+      (selectedFilter === "disposal" && asset.status === "disposal") ||
+      (selectedFilter === "good" && asset.status === "good") ||
+      (selectedFilter === "damaged" && asset.status === "damaged");
 
     const matchesSearch =
       searchTerm === "" ||
@@ -102,19 +101,6 @@ const ViewAsset = () => {
 
     return matchesFilter && matchesSearch;
   });
-
-  const formatCurrency = (amount) => {
-    if (!amount) return "N/A";
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(amount);
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString();
-  };
 
   if (loading) {
     return (
@@ -185,70 +171,69 @@ const ViewAsset = () => {
       </div>
 
       <div className="table-responsive">
-        <table className="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Asset Tag</th>
-              <th scope="col">Model</th>
-              <th scope="col">Department</th>
-              <th scope="col">Location</th>
-              <th scope="col">Status</th>
-              <th scope="col">Purchase Cost</th>
-              <th scope="col">Action</th>
-            </tr>
+        <table className="table table-hover align-middle">
+          <thead className="table-light">
+          <tr>
+            <th scope="col" className="py-3 px-3">Name</th>
+            <th scope="col" className="py-3 px-3">Asset Tag</th>
+            <th scope="col" className="py-3 px-3">Model</th>
+            <th scope="col" className="py-3 px-3">Department</th>
+            <th scope="col" className="py-3 px-3">Location</th>
+            <th scope="col" className="py-3 px-3">Status</th>
+            <th scope="col" className="py-3 px-3">Purchase Cost</th>
+            <th scope="col" className="py-3 px-3 text-center">Action</th>
+          </tr>
           </thead>
           <tbody>
-            {filteredAssets.map((asset) => (
+          {filteredAssets.map((asset) => (
               <tr key={asset.id}>
-                <th>{asset.name}</th>
-                <td>{asset.asset_tag || "N/A"}</td>
-                <td>{asset.model || "N/A"}</td>
-                <td>{asset.department || "N/A"}</td>
-                <td>{asset.location || "N/A"}</td>
-                <td>
+                <td className="py-3 px-3">{asset.name}</td>
+                <td className="py-3 px-3">{asset.asset_tag || "N/A"}</td>
+                <td className="py-3 px-3">{asset.model || "N/A"}</td>
+                <td className="py-3 px-3">{asset.department || "N/A"}</td>
+                <td className="py-3 px-3">{asset.location || "N/A"}</td>
+                <td className="py-3 px-3">
                   <span
-                    className={`badge ${
-                      asset.status === "Deployed"
-                        ? "bg-success"
-                        : asset.status === "Pending"
-                        ? "bg-warning"
-                        : asset.status === "Undeployed"
-                        ? "bg-secondary"
-                        : "bg-danger"
-                    }`}
+                      className={`badge text-white text-capitalize ${
+                          asset.status === "good" || asset.status === "new"
+                              ? "bg-success"
+                              : asset.status === "disposal"
+                                  ? "bg-secondary"
+                                  : "bg-danger"
+                      }`}
                   >
-                    {asset.status || "Unknown"}
+                  {asset.status}
                   </span>
                 </td>
-                <td>{formatCurrency(asset.purchase_cost)}</td>
-                <td>
-                  <div className="d-flex gap-2">
+                <td className="py-3 px-3">{formatCurrency(asset.purchase_cost)}</td>
+                <td className="py-3 px-3 text-center">
+                  <div className="d-flex justify-content-center gap-3">
                     <FaEye
-                      className="text-success cursor-pointer"
-                      onClick={() => handleViewAsset(asset)}
-                      title="View Details"
-                      style={{ cursor: "pointer" }}
+                        className="text-success"
+                        onClick={() => handleViewAsset(asset)}
+                        title="View Details"
+                        style={{ cursor: "pointer", fontSize: "1.8rem" }}
                     />
                     <FaEdit
-                      className="text-primary cursor-pointer"
-                      title="Edit Asset"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => navigate(`/assets/edit/${asset.id}`)}
+                        className="text-primary"
+                        onClick={() => navigate(`/assets/edit/${asset.id}`)}
+                        title="Edit Asset"
+                        style={{ cursor: "pointer", fontSize: "1.8rem" }}
                     />
                     <FaTrash
-                      className="text-danger cursor-pointer"
-                      title="Delete Asset"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleDeleteAsset(asset.id)}
+                        className="text-danger"
+                        onClick={() => handleDeleteAsset(asset.id)}
+                        title="Delete Asset"
+                        style={{ cursor: "pointer", fontSize: "1.8rem" }}
                     />
                   </div>
                 </td>
               </tr>
-            ))}
+          ))}
           </tbody>
         </table>
       </div>
+
 
       {filteredAssets.length === 0 && !loading && (
         <div className="text-center py-4">
@@ -290,13 +275,13 @@ const ViewAsset = () => {
                     </div>
                     <div className="mb-3">
                       <strong>Serial Number:</strong>{" "}
-                      {selectedAsset.serial_number || "N/A"}
+                      {selectedAsset.serial_no || "N/A"}
                     </div>
                     <div className="mb-3">
                       <strong>Model:</strong> {selectedAsset.model || "N/A"}
                     </div>
                     <div className="mb-3">
-                      <strong>Type:</strong> {selectedAsset.asset_type || "N/A"}
+                      <strong>Type:</strong> {selectedAsset.type || "N/A"}
                     </div>
                   </div>
 
@@ -307,11 +292,7 @@ const ViewAsset = () => {
                     </h6>
                     <div className="mb-3">
                       <strong>Purchase Date:</strong>{" "}
-                      {formatDate(selectedAsset.purchase_date)}
-                    </div>
-                    <div className="mb-3">
-                      <strong>Supplier:</strong>{" "}
-                      {selectedAsset.supplier || "N/A"}
+                      {formatDate(selectedAsset.created_at)}
                     </div>
                     <div className="mb-3">
                       <strong>Purchase Cost:</strong>{" "}
@@ -335,17 +316,15 @@ const ViewAsset = () => {
                     <div className="mb-3">
                       <strong>Status:</strong>
                       <span
-                        className={`badge ms-2 ${
-                          selectedAsset.status === "Deployed"
-                            ? "bg-success"
-                            : selectedAsset.status === "Pending"
-                            ? "bg-warning"
-                            : selectedAsset.status === "Undeployed"
-                            ? "bg-secondary"
-                            : "bg-danger"
-                        }`}
-                      >
-                        {selectedAsset.status || "Unknown"}
+                          className={`badge text-white text-capitalize ml-2 ${
+                              selectedAsset.status === "good" || selectedAsset.status === "new"
+                                  ? "bg-success"
+                                  : selectedAsset.status === "disposal"
+                                      ? "bg-secondary"
+                                      : "bg-danger"
+                          }`}
+                        >
+                        {selectedAsset.status}
                       </span>
                     </div>
                     <div className="mb-3">

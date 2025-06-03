@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaCircle, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import formatDate from "../helpers/DateFormat.jsx";
 
 const AssetRequest = () => {
   const [requests, setRequests] = useState([]);
@@ -40,18 +41,6 @@ const AssetRequest = () => {
     console.log("No valid token found in localStorage");
     console.log("Available localStorage keys:", Object.keys(localStorage));
     return null;
-  };
-
-  // Check if user is authenticated
-  const isAuthenticated = () => {
-    const token = getAuthToken();
-    const isValid =
-      token && token !== "null" && token !== "undefined" && token.trim() !== "";
-    console.log("Authentication check:", {
-      token: token ? "Present" : "Missing",
-      isValid,
-    });
-    return isValid;
   };
 
   // Fetch requests from API
@@ -150,16 +139,6 @@ const AssetRequest = () => {
     fetchRequests();
   }, []);
 
-  // Format date for display
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-  };
-
   // Get status icon and color
   const getStatusIcon = (status) => {
     switch (status?.toLowerCase()) {
@@ -245,7 +224,6 @@ const AssetRequest = () => {
                 <th scope="col">Requested Date</th>
                 <th scope="col">Requested Asset</th>
                 <th scope="col">Requested User</th>
-                <th scope="col">Reason</th>
                 <th scope="col">Status</th>
                 <th scope="col">Actions</th>
               </tr>
@@ -263,13 +241,6 @@ const AssetRequest = () => {
                     {request.requested_user?.username ||
                       request.requested_user ||
                       "N/A"}
-                  </td>
-                  <td>
-                    <span title={request.reason}>
-                      {request.reason?.length > 50
-                        ? `${request.reason.substring(0, 50)}...`
-                        : request.reason || "N/A"}
-                    </span>
                   </td>
                   <td>
                     <div
