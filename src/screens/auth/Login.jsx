@@ -75,6 +75,7 @@ const Login = () => {
                                 onChange={handleChange}
                                 className="w-full px-3 py-2 rounded-3xl outline-none"
                                 required
+                                placeholder='email address'
                             />
                         </div>
 
@@ -89,6 +90,7 @@ const Login = () => {
                                     onChange={handleChange}
                                     className="w-full px-3 py-2 rounded-3xl outline-none"
                                     required
+                                    placeholder='password'
                                 />
                                 <button type="button" className="absolute inset-y-0 right-0 pr-3 flex items-center" onClick={() => setShowPassword(!showPassword)} >
                                     {showPassword ? (
