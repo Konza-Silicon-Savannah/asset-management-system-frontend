@@ -1,22 +1,28 @@
 import { useState, useEffect, useRef } from "react";
 import Choices from "choices.js";
 import { Link } from "lucide-react";
+import axios from "axios";
+import {useParams} from "react-router-dom";
+
+const api_url = import.meta.env.VITE_API_URL;
+const token = localStorage.getItem("AuthToken");
 
 const AssetForm = () => {
   const [assetData, setAssetData] = useState({
     name: "",
-    serial_number: "",
+    serial_no: "",
     asset_tag: "",
     model: "",
     purchase_date: "",
-    supplier: "",
     purchase_cost: "",
     description: "",
     asset_type: "",
     location: "",
     department: "",
-    status: "",
+    status: "good",
   });
+
+  const { id } = useParams();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -82,8 +88,6 @@ const AssetForm = () => {
   const [department, setDepartment] = useState(defaultDepartments);
   const [status, setStatus] = useState(defaultStatuses);
 
-  const API_BASE_URL = "http://127.0.0.1:8000";
-
   const handleChange = ({ currentTarget: input }) => {
     setAssetData({ ...assetData, [input.name]: input.value });
   };
@@ -100,25 +104,25 @@ const AssetForm = () => {
   useEffect(() => {
     const fetchDropdownData = async () => {
       try {
-        const typesResponse = await fetch(`${API_BASE_URL}/asset-types/`);
+        const typesResponse = await fetch(`${api_url}/asset-types/`);
         if (typesResponse.ok) {
           const typesData = await typesResponse.json();
           setAssetType(typesData);
         }
 
-        const locationsResponse = await fetch(`${API_BASE_URL}/locations/`);
+        const locationsResponse = await fetch(`${api_url}/locations/`);
         if (locationsResponse.ok) {
           const locationsData = await locationsResponse.json();
           setLocation(locationsData);
         }
 
-        const departmentsResponse = await fetch(`${API_BASE_URL}/departments/`);
+        const departmentsResponse = await fetch(`${api_url}/departments/`);
         if (departmentsResponse.ok) {
           const departmentsData = await departmentsResponse.json();
           setDepartment(departmentsData);
         }
 
-        const statusResponse = await fetch(`${API_BASE_URL}/status-list/`);
+        const statusResponse = await fetch(`${api_url}/status-list/`);
         if (statusResponse.ok) {
           const statusData = await statusResponse.json();
           setStatus(statusData);
@@ -132,83 +136,63 @@ const AssetForm = () => {
     fetchDropdownData();
   }, []);
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
     setSuccess("");
-
-    // Validate required fields
-    if (
-      !assetData.name ||
-      !assetData.serial_number ||
-      !assetData.asset_type ||
-      !assetData.location ||
-      !assetData.department ||
-      !assetData.status
-    ) {
-      setError("Please fill in all required fields");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      console.log("Sending data:", assetData);
-
-      const response = await fetch(`${API_BASE_URL}/assets/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(assetData),
+    try{
+      id ? await axios.put(`${api_url}/assets/${id}/`, assetData,{headers:{Authorization: `Bearer ${token}`}}) :
+      await axios.post(`${api_url}/assets/`, assetData, {
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setAssetData({
+        name: "",
+        serial_no: "",
+        asset_tag: "",
+        model: "",
+        purchase_date: "",
+        purchase_cost: "",
+        description: "",
+        asset_type: "",
+        location: "",
+        department: "",
+        status: "",
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        setSuccess("Asset created successfully!");
+      // Reset Choices.js selections
+      Object.values(choicesInstances.current).forEach((instance) => {
+        if (instance && instance.removeActiveItems) {
+          instance.removeActiveItems();
+        }
+      });
 
-        // Reset form
-        setAssetData({
-          name: "",
-          serial_number: "",
-          asset_tag: "",
-          model: "",
-          purchase_date: "",
-          supplier: "",
-          purchase_cost: "",
-          description: "",
-          asset_type: "",
-          location: "",
-          department: "",
-          status: "",
-        });
-
-        // Reset Choices.js selections
-        Object.values(choicesInstances.current).forEach((instance) => {
-          if (instance && instance.removeActiveItems) {
-            instance.removeActiveItems();
-          }
-        });
-
-        // Optionally redirect after successful creation
-        setTimeout(() => {
-          window.location.href = "/assets";
-        }, 2000);
-      } else {
-        const errorData = await response.json();
-        console.error("Server error:", errorData); // Debug log
-        setError(
-          errorData.message || errorData.detail || "Failed to create asset"
-        );
-      }
-    } catch (error) {
+      // Optionally redirect after successful creation
+      setTimeout(() => {
+        window.location.href = "/assets";
+      }, 2000);
+    }catch (error) {
       console.error("Error creating asset:", error);
       setError("Network error. Please try again.");
     } finally {
       setLoading(false);
     }
-  };
+  }
+
+  const fetchAsset = async (assetId) =>{
+    try {
+      const response = await axios.get(`${api_url}/assets/${assetId}`, {
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setAssetData(response.data);
+    }catch (error) {
+      console.log(error);
+    }
+  }
 
   // Initialize Choices.js for asset types
   useEffect(() => {
@@ -364,9 +348,15 @@ const AssetForm = () => {
     };
   }, [status]);
 
+  useEffect(() => {
+    if(id){
+      fetchAsset(id);
+    }
+  }, []);
+
   return (
     <div className="p-5">
-      <h1 className="text-xl uppercase font-black">Add Asset</h1>
+      <h1 className="text-xl uppercase font-black"> {id? "Edit Asset" : "Add Asset" }</h1>
 
       {/* Success Message */}
       {success && (
@@ -398,11 +388,11 @@ const AssetForm = () => {
           </div>
 
           <div className="grid gap-3">
-            <label htmlFor="serial_number">Serial Number *</label>
+            <label htmlFor="serial_no">Serial Number *</label>
             <input
               type="text"
-              name="serial_number"
-              value={assetData.serial_number}
+              name="serial_no"
+              value={assetData.serial_no}
               placeholder="Asset Serial Number"
               className="px-3 py-2 outline-none border-2 rounded-md"
               onChange={handleChange}
@@ -443,19 +433,6 @@ const AssetForm = () => {
               id="purchase_date"
               name="purchase_date"
               value={assetData.purchase_date}
-              className="px-3 py-2 outline-none border-2 rounded-md"
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="grid gap-3">
-            <label htmlFor="supplier">Supplier</label>
-            <input
-              type="text"
-              name="supplier"
-              id="supplier"
-              value={assetData.supplier}
-              placeholder="eg. DimTech computers"
               className="px-3 py-2 outline-none border-2 rounded-md"
               onChange={handleChange}
             />
@@ -548,7 +525,7 @@ const AssetForm = () => {
             Close
           </a>
           <button type="submit" className="btn btn-success" disabled={loading}>
-            {loading ? "Saving..." : "Save Asset"}
+            {loading ? id ? "Editing..." : "Saving..." : id ? "Edit Asset" : "Save Asset"}
           </button>
         </div>
       </form>

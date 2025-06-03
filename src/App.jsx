@@ -71,6 +71,11 @@ const App = () => {
                             <AssetForm />
                         </ProtectedRoute>
                     } />
+                    <Route path="/assets/edit/:id" element={
+                        <ProtectedRoute>
+                            <AssetForm />
+                        </ProtectedRoute>
+                    } />
                     <Route path="/assets/request" element={
                         // <ProtectedRoute>
                             <AssetRequest />
