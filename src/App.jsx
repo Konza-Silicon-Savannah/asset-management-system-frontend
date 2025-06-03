@@ -59,7 +59,7 @@ const App = () => {
                     <Route path="/dashboard" element={
                         <ProtectedRoute>
                             <Dashboard />
-                        </ProtectedRoute>
+                        </ProtectedRoute> 
                     } />
                     <Route path="/assets" element={
                         <ProtectedRoute>
@@ -72,9 +72,9 @@ const App = () => {
                         </ProtectedRoute>
                     } />
                     <Route path="/assets/request" element={
-                        <ProtectedRoute>
+                        // <ProtectedRoute>
                             <AssetRequest />
-                        </ProtectedRoute>
+                    //  </ProtectedRoute>
                     } />
                     <Route path="/users" element={
                         <ProtectedRoute>

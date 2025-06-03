@@ -2,10 +2,26 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 import React from 'react'
-
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 const AreaChart1 = () => {
+    const [analytics, setAnalytics] = useState(null); // use null for better check
+    
+        const getAnalytics = async () => {
+            try {
+                const response = await axios.get('https://restcountries.com/v3.1/all');
+                setAnalytics(response.data.length);
+            } catch (error) {
+                console.error("Error fetching analytics:", error);
+            }
+        };
+    
+        useEffect(() => {
+            getAnalytics();
+        }, []);
+    
     const data = [
-        { month: "Jan", Assets: 100, Liabilities: 300, Expenses:200, Revenue: 100 },
+        { month: "Jan", Assets: analytics, Liabilities: analytics, Expenses:analytics, Revenue: analytics },
         { month: "Feb", Assets: 200, Liabilities: 100, Expenses: 100, Revenue: 300 },
         { month: "Mar", Assets: 100, Liabilities: 300, Expenses: 200, Revenue: 100 },
         { month: "Apr", Assets: 200, Liabilities: 100, Expenses: 100, Revenue: 300 },

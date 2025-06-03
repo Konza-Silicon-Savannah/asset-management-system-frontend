@@ -1,7 +1,25 @@
 import React from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-const data = [
-    { month: "January", pending: 20, disposal: 50, issued: 70 },
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+
+const BarChart1 = () => {
+    const [analytics, setAnalytics] = useState(null); // use null for better check
+    
+        const getAnalytics = async () => {
+            try {
+                const response = await axios.get('https://restcountries.com/v3.1/all');
+                setAnalytics(response.data.length);
+            } catch (error) {
+                console.error("Error fetching analytics:", error);
+            }
+        };
+    
+        useEffect(() => {
+            getAnalytics();
+        }, []);
+        const data = [
+    { month: "January", pending: analytics, disposal: analytics, issued: analytics },
     { month: "February", pending: 30, disposal: 40, issued: 80 },
     { month: "March", pending: 25, disposal: 90, issued: 30 },
     { month: "April", pending: 80, disposal: 90, issued: 60 },
@@ -14,7 +32,7 @@ const data = [
     { month: "November", pending: 80, disposal: 65, issued: 30 },
     { month: "December", pending: 60, disposal: 30, issued: 70 },
 ];
-const BarChart1 = () => {
+    
     return (
         <div>
             <ResponsiveContainer width="100%" height={400}>
