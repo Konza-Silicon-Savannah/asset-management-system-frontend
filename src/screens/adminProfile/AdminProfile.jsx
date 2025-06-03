@@ -1,6 +1,5 @@
 import {useEffect, useState} from 'react';
 import {User, Eye, EyeOff, Save} from 'lucide-react';
-import Navbar from "./Navbar.jsx";
 import CustomAlert from "../helpers/CustomAlert.jsx";
 import axios from "axios";
 import formatDate from "../helpers/DateFormat.jsx";
@@ -8,7 +7,7 @@ import formatDate from "../helpers/DateFormat.jsx";
 const api_url = import.meta.env.VITE_API_URL;
 const token = localStorage.getItem("AuthToken");
 
-const Profile = () => {
+const AdminProfile = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [password, setPassword] = useState('');
@@ -70,10 +69,7 @@ const Profile = () => {
     }, []);
 
     return (
-        <div className="min-h-dvh bg-gray-50 grid items-center">
-            <div className="absolute top-0 w-full h-full">
-                <Navbar />
-            </div>
+        <div className="min-h-screen bg-gray-50 grid items-center">
 
             {showAlert && (
                 <CustomAlert
@@ -222,4 +218,4 @@ const Profile = () => {
     );
 }
 
-export default Profile;
+export default AdminProfile;

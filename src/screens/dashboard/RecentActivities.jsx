@@ -17,7 +17,7 @@ const RecentActivities = () => {
                     }
                 });
 
-                const result = response.data;
+                const result = response.data.results;
                 console.log(result);
 
                  setAssets(result); // Handle pagination if implemented

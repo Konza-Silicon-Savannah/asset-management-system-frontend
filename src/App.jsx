@@ -14,7 +14,8 @@ import LandingPage from "./screens/LandingPage.jsx";
 import UserPortal from "./screens/userPortal/UserPortal.jsx";
 import Profile from "./screens/userPortal/Profile.jsx";
 import axios from "axios";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
+import AdminProfile from "./screens/adminProfile/AdminProfile.jsx";
 
 const api_url = import.meta.env.VITE_API_URL;
 const token = localStorage.getItem("AuthToken");
@@ -59,7 +60,7 @@ const App = () => {
                     <Route path="/dashboard" element={
                         <ProtectedRoute>
                             <Dashboard />
-                        </ProtectedRoute> 
+                        </ProtectedRoute>
                     } />
                     <Route path="/assets" element={
                         <ProtectedRoute>
@@ -79,7 +80,7 @@ const App = () => {
                     <Route path="/assets/request" element={
                         <ProtectedRoute>
                             <AssetRequest />
-                     </ProtectedRoute>
+                        </ProtectedRoute>
                     } />
                     <Route path="/users" element={
                         <ProtectedRoute>
@@ -99,6 +100,11 @@ const App = () => {
                     <Route path="/profile" element={
                         <ProtectedRoute>
                             <Profile/>
+                        </ProtectedRoute>
+                    }/>
+                    <Route path="/admin-profile" element={
+                        <ProtectedRoute>
+                            <AdminProfile/>
                         </ProtectedRoute>
                     }/>
                 </Routes>
