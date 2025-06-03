@@ -40,10 +40,10 @@ const RecentActivities = () => {
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">DATE</th>
-                        <th scope="col">ISSUER</th>
-                        <th scope="col">Serial_no
-</th>
-                        <th scope="col">ITEM</th>
+                        <th scope="col">STATUS</th>
+                        <th scope="col">SERIAL NO </th>
+
+                        <th scope="col">MODEL</th>
                         <th scope="col">USER</th>
                         <th scope="col">DEPARTMENT</th>
                     </tr>
@@ -53,9 +53,9 @@ const RecentActivities = () => {
                         <tr key={asset.id || index}>
                             <th scope="row">{index + 1}</th>
                             <td>{asset.created_at || '—'}</td>
-                            <td>{asset.issuer || '—'}</td>
+                            <td>{asset.status || '—'}</td>
                             <td>{asset.serial_no || '—'}</td>
-                            <td>{asset.item || '—'}</td>
+                            <td>{asset.model || '—'}</td>
                             <td>{asset.name || '—'}</td>
                             <td>{asset.department || '—'}</td>
                         </tr>
