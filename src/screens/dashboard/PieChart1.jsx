@@ -13,7 +13,7 @@ const PieChart1 = () => {
             }
         });
         setAnalytics(response.data);
-        console.log(response.data);
+        // console.log(response.data);
     };
 
     useEffect(() => {

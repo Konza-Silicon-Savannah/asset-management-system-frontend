@@ -13,7 +13,7 @@ const Dashboard = () => {
             <TopBar/>
             <div className="row">
                 <div className="col-md-8">
-                    <AreaChart1 />
+                    <BarChart1 />
                 </div>
                 <div className="col-md-4">
                     <PieChart1 />
@@ -25,7 +25,7 @@ const Dashboard = () => {
                     <RecentActivities/>
                 </div>
                 <div className="col-md-12">
-                    <BarChart1 />
+                    
                 </div>
             </div>
 
