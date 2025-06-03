@@ -1,30 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
-
+const api_url = import.meta.env.VITE_API_URL;
+const token = localStorage.getItem("AuthToken");
 const PieChart1 = () => {
-    const [analytics, setAnalytics] = useState(null); // use null for better check
+    const [analytics, setAnalytics] = useState(null);
 
     const getAnalytics = async () => {
-        try {
-            const response = await axios.get('https://restcountries.com/v3.1/all');
-            setAnalytics(response.data.length);
-        } catch (error) {
-            console.error("Error fetching analytics:", error);
-        }
+        const response = await axios.get(`${api_url}/analytics`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        setAnalytics(response.data);
+        console.log(response.data);
     };
 
     useEffect(() => {
-        getAnalytics();
-    }, []);
+        getAnalytics()
+    }, [])
 
     // render the chart once data is available
     if (analytics === null) return <p>Loading chart...</p>;
 
     const data = [
-        { name: "Pending", value: analytics, color: "#8B75FF" }, // Purple
-        { name: "Asset due for disposal", value: analytics, color: "#FF9E9E" }, // Pink
-        { name: "Frequently issued Assets", value: analytics, color: "#3EC6E0" }, // Cyan
+        { name: "Pending", value: analytics?.pending_asset_requests, color: "#8B75FF" }, // Purple
+        { name: "Asset due for disposal", value: analytics?.assets_due_for_disposal, color: "#FF9E9E" }, // Pink
+        { name: "Approved Assets", value: analytics?.approved_assets, color: "#3EC6E0" }, // Cyan
     ];
 
     return (

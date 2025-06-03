@@ -72,9 +72,9 @@ const App = () => {
                         </ProtectedRoute>
                     } />
                     <Route path="/assets/request" element={
-                        <ProtectedRoute>
+                        // <ProtectedRoute>
                             <AssetRequest />
-                        </ProtectedRoute>
+                    //  </ProtectedRoute>
                     } />
                     <Route path="/users" element={
                         <ProtectedRoute>
