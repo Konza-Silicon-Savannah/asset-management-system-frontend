@@ -39,6 +39,8 @@ const Login = () => {
                 }
             }, 1500);
         } catch (error) {
+            console.log(error);
+            
             handleShowAlert("error", error.response.data.message)
         }
     };
