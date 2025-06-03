@@ -32,7 +32,7 @@ const Reports = () => {
 
     const fetchTypes = async () => {
         try {
-            const response = await axios.get(`${api_url}/asset-types`, {
+            const response = await axios.get(`${api_url}/assets/types`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
