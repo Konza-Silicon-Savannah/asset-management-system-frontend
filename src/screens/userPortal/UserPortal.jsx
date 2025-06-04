@@ -72,7 +72,8 @@ const UserPortal = () => {
                     Authorization: `Bearer ${token}`
                 }
             });
-            const allRequests = response.data;
+            const allRequests = response.data.results;
+            console.log(allRequests);
             const approvedAssets = allRequests.filter(request => request.action === 'approved');
             const pendingOrRejectedRequests = allRequests.filter(request =>
                 request.action === 'pending' || request.action === 'rejected'
