@@ -11,6 +11,7 @@ import Pagination from "../helpers/Pagination.jsx";
 const api_url = import.meta.env.VITE_API_URL;
 const token = localStorage.getItem("AuthToken");
 
+
 const Reports = () => {
     const [report, setReport] = useState([]);
     const [dateRange, setDateRange] = useState('7');
