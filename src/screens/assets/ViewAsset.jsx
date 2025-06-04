@@ -19,40 +19,37 @@ const token = localStorage.getItem("AuthToken");
 
 const ViewAsset = () => {
   const navigate = useNavigate();
-  const [selectedFilter, setSelectedFilter] = useState("All");
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [assets, setAssets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // Fetch assets from backend
-  useEffect(() => {
-    const fetchAssets = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`${api_url}/assets/`,{
-          headers:{
-            Authorization: `Bearer ${token}`
-          }
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setAssets(data.results || data); // Handle pagination if implemented
-        } else {
-          setError("Failed to fetch assets");
+  const fetchAssets = async () => {
+    try {
+      const response = await fetch(`${api_url}/assets?page=${currentPage}&status=${selectedStatus}&search=${searchTerm}`,{
+        headers:{
+          Authorization: `Bearer ${token}`
         }
-      } catch (error) {
-        console.error("Error fetching assets:", error);
-        setError("Network error. Please check your connection.");
-      } finally {
-        setLoading(false);
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setAssets(data.results || data); // Handle pagination if implemented
+      } else {
+        setError("Failed to fetch assets");
       }
-    };
+    } catch (error) {
+      console.error("Error fetching assets:", error);
+      setError("Network error. Please check your connection.");
+    }
+  };
 
+  useEffect(() => {
     fetchAssets();
-  }, []);
+  }, [searchTerm, selectedStatus, currentPage]);
 
   const handleViewAsset = (asset) => {
     setSelectedAsset(asset);
@@ -81,40 +78,19 @@ const ViewAsset = () => {
     }
   };
 
-  const filteredAssets = assets.filter((asset) => {
-    const matchesFilter =
-      selectedFilter === "All" ||
-      (selectedFilter === "new" && asset.status === "new") ||
-      (selectedFilter === "disposal" && asset.status === "disposal") ||
-      (selectedFilter === "good" && asset.status === "good") ||
-      (selectedFilter === "damaged" && asset.status === "damaged");
-
-    const matchesSearch =
-      searchTerm === "" ||
-      asset.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      asset.asset_tag?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      asset.model?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      asset.supplier?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      asset.asset_type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      asset.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      asset.location?.toLowerCase().includes(searchTerm.toLowerCase());
-
-    return matchesFilter && matchesSearch;
-  });
-
-  if (loading) {
-    return (
-      <div
-        className="p-5 d-flex justify-content-center align-items-center"
-        style={{ minHeight: "400px" }}
-      >
-        <div className="text-center">
-          <FaSpinner className="fa-spin" size={32} />
-          <p className="mt-3">Loading assets...</p>
-        </div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div
+  //       className="p-5 d-flex justify-content-center align-items-center"
+  //       style={{ minHeight: "400px" }}
+  //     >
+  //       <div className="text-center">
+  //         <FaSpinner className="fa-spin" size={32} />
+  //         <p className="mt-3">Loading assets...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (error) {
     return (
@@ -150,15 +126,15 @@ const ViewAsset = () => {
           </div>
           <select
             className="form-select"
-            value={selectedFilter}
-            onChange={(e) => setSelectedFilter(e.target.value)}
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
             style={{ width: "150px" }}
           >
-            <option value="All">All</option>
-            <option value="New">New</option>
-            <option value="Disposal">Disposal</option>
-            <option value="Good">Good</option>
-            <option value="Damaged">Damaged</option>
+            <option value="all">All</option>
+            <option value="new">New</option>
+            <option value="disposal">Disposal</option>
+            <option value="good">Good</option>
+            <option value="damaged">Damaged</option>
           </select>
         </div>
         <button
@@ -185,7 +161,7 @@ const ViewAsset = () => {
           </tr>
           </thead>
           <tbody>
-          {filteredAssets.map((asset) => (
+          {assets.map((asset) => (
               <tr key={asset.id}>
                 <td className="py-3 px-3">{asset.name}</td>
                 <td className="py-3 px-3">{asset.asset_tag || "N/A"}</td>
@@ -235,7 +211,7 @@ const ViewAsset = () => {
       </div>
 
 
-      {filteredAssets.length === 0 && !loading && (
+      {assets.length === 0 && !loading && (
         <div className="text-center py-4">
           <p className="text-muted">No assets found matching your criteria.</p>
         </div>

@@ -57,14 +57,14 @@ const Login = () => {
                 />
             )}
 
-            <div className="w-full bg-[#00763A] pl-10 flex items-center">
+            <div className="w-full bg-[#00763A] pl-10 flex items-center absolute">
                 <div className="text-white flex items-center">
                     <img src="/images/konza.jpg" alt="konza" className="h-14 mr-5" />
                     <span className="text-xl font-medium">Asset Management System</span>
                 </div>
             </div>
 
-            <div className="flex justify-center items-center py-12">
+            <div className="flex justify-center items-center py-12 h-dvh">
                 <div className="w-full max-w-md bg-[#00763A] rounded-lg p-8">
                     <div className="flex flex-col items-center mb-8">
                         <img src="/images/konza.jpg" alt="konza" className="h-32 mb-2"/>

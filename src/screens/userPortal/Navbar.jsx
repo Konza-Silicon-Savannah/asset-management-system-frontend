@@ -35,8 +35,8 @@ const Navbar = () =>{
     return(
         <div className="bg-[#00763A] shadow-lg relative">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-                <div>
-                    <div className="absolute left-[10rem] h-full">
+                <div className="flex items-center gap-6">
+                    <div className="h-full w-24">
                         <img src="images/konza.jpg" alt="" className="w-full h-full" />
                     </div>
                     <div className="py-6">
