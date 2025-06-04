@@ -46,7 +46,7 @@ const Users = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      setUsers(response.data.results);
+      setUsers(response.data);
     } catch (error) {
       console.log(error);
     }
