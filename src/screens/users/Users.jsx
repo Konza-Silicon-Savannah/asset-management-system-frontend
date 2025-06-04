@@ -111,6 +111,11 @@ const Users = () => {
       const newStatus = currentStatus === "active" ? "inactive" : "active";
       const response = await axios.patch(`${api_url}/users/${id}/`, {
         status: newStatus,
+        
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
 
       fetchUsers();
