@@ -4,6 +4,7 @@ import Navbar from "./Navbar.jsx";
 import CustomAlert from "../helpers/CustomAlert.jsx";
 import axios from "axios";
 import formatDate from "../helpers/DateFormat.jsx";
+import {redirect, useNavigate} from "react-router-dom";
 
 const api_url = import.meta.env.VITE_API_URL;
 const token = localStorage.getItem("AuthToken");
@@ -17,6 +18,8 @@ const Profile = () => {
     const [alertType, setAlertType] = useState('success');
     const [alertMessage, setAlertMessage] = useState('');
     const [user, setUser] = useState({});
+
+    const navigate = useNavigate();
 
     const handleShowAlert = (type, message) => {
         setAlertType(type);
@@ -57,7 +60,8 @@ const Profile = () => {
                 setPassword('');
                 setConfirmPassword('');
                 handleShowAlert("success", "Password updated successfully");
-            },[500]);
+                navigate("/user-portal")
+            },[1500]);
 
         }catch (e){
             handleShowAlert("error", "Unable to update password!");
@@ -71,7 +75,7 @@ const Profile = () => {
 
     return (
         <div className="min-h-dvh bg-gray-50 grid items-center">
-            <div className="absolute top-0 w-full h-full">
+            <div className="absolute top-0 w-full">
                 <Navbar />
             </div>
 
@@ -198,7 +202,7 @@ const Profile = () => {
                                     <div className="pt-4">
                                         <button
                                             type="submit"
-                                            className="flex items-center justify-center w-full bg-[#00763A] hover:bg-green-700 text-white py-2 px-4 rounded-md font-medium transition-colors duration-200"
+                                            className="flex items-center justify-center w-full bg-[#00763A] hover:bg-green-700 hover:cursor-pointer text-white py-2 px-4 rounded-md font-medium transition-colors duration-200"
                                         >
                                             <Save className="w-4 h-4 mr-2" />
                                             Update Password

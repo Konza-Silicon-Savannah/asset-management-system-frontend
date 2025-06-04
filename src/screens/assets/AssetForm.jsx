@@ -268,10 +268,12 @@ const AssetForm = () => {
 
   return (
       <div className="p-5 relative">
-        <button onClick={excelFormModal} className="inline-flex items-center px-4 py-2 border border-[#00763A] shadow-sm text-sm font-medium rounded-md text-[#00763A] hover:bg-[#00763A] hover:text-white transition-colors absolute right-10 top-10">
-          <FaUpload className="mr-2" />
-          Import Excel
-        </button>
+        {!id && (
+            <button onClick={excelFormModal} className="inline-flex items-center px-4 py-2 border border-[#00763A] shadow-sm text-sm font-medium rounded-md text-[#00763A] hover:bg-[#00763A] hover:text-white transition-colors absolute right-10 top-10">
+              <FaUpload className="mr-2" />
+              Import Excel
+            </button>
+        )}
 
         <UploadExcel hideExcelForm={hideExcelForm} excelFormModal={excelFormModal} />
 

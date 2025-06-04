@@ -9,9 +9,9 @@ import Cards from './Cards';
 
 const Dashboard = () => {
     return (
-        <div className="main-panel">
+        <div className="main-panel" style={{overflowX: "hidden"}}>
             <TopBar/>
-            <div className="row">
+            <div className="row p-4" >
                 <div className="col-md-8">
                     <BarChart1 />
                 </div>

@@ -73,10 +73,6 @@
 margin-bottom: 30px;
 
 }
-.getstarted-btn:hover{
-  letter-spacing: 3px;
-  transition: 0.5s;
-}
 *{
   margin: 0;
   padding: 0;

@@ -35,40 +35,12 @@ const AssetRequest = () => {
   // Update request status
   const updateRequestStatus = async (requestId, newStatus) => {
     try {
-      // jaymoh add auth, For testing - skip authentication check
-      // if (!isAuthenticated()) {
-      //   throw new Error("No authentication token found. Please log in.");
-      // }
 
-      const token = getAuthToken();
-      const headers = {
-        "Content-Type": "application/json",
-      };
-
-      // Add authorization header only if token exists
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
-
-      const response = await fetch(`${API_BASE_URL}/requests/${requestId}/`, {
-        method: "PATCH",
-        headers: headers,
-        body: JSON.stringify({
-          action: newStatus,
-        }),
+      await axios.patch(`${api_url}/requests/${requestId}/`, {action: newStatus,},{
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
-
-      if (response.status === 401) {
-        throw new Error("Authentication failed. Please log in again.");
-      }
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.detail || `HTTP error! status: ${response.status}`
-        );
-      }
-
       // Refresh the requests list after successful update
       await fetchRequests();
     } catch (err) {
@@ -236,16 +208,6 @@ const AssetRequest = () => {
                         disabled={request.action === "rejected"}
                       >
                         Reject
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-outline-secondary"
-                        onClick={() =>
-                          updateRequestStatus(request.id, "pending")
-                        }
-                        disabled={request.action === "pending"}
-                      >
-                        Pending
                       </button>
                     </div>
                   </td>
