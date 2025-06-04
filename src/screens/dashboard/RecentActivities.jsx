@@ -1,46 +1,69 @@
 import React from 'react'
+import { useEffect, useState } from 'react';
+import axios from "axios";
+const api_url = import.meta.env.VITE_API_URL;
+const token = localStorage.getItem("AuthToken");
 
 const RecentActivities = () => {
-  return (
-    <div className='my-3'>
-        <h3 className='my-4 fw-bold'>Recent Activities</h3>
-         <table className="table table-hover mx-1">
-                        <thead className='table-success'>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">DATE</th>
-                                <th scope="col">ISSUER</th>
-                                <th scope="col">ACTION</th>
-                                <th scope="col">ITEM</th>
-                                <th scope="col">USER</th>
-                                <th scope="col">DEPARTMENT</th>
-                                
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>01-01-2025</td>
-                                <td>James</td>
-                                <td>Check in</td>
-                                <td>hp elitebook</td>                            
-                                <td>Shueib</td>                            
-                                <td>DC</td>                            
-                            </tr>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>02-03-2025</td>
-                                <td>Mumo</td>
-                                <td>new asset</td>
-                                <td>Huawei metabook</td>
-                                <td>Winnie </td>
-                                <td>ICM</td>
-                            </tr>
-        
-                        </tbody>
-                    </table>
-    </div>
-  )
+    const [assets, setAssets] = useState([]);
+    const [error, setError] = useState("");
+    useEffect(() => {
+        const fetchAssets = async () => {
+
+            try {
+                const response = await axios.get(`${api_url}/assets/`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                const result = response.data.results;
+                console.log(result);
+
+                 setAssets(result); // Handle pagination if implemented
+
+            } catch (error) {
+                console.error("Error fetching assets:", error);
+                setError("Network error. Please check your connection.");
+            }
+        };
+
+        fetchAssets();
+    }, []);
+    return (
+
+
+        <div className='my-3'>
+            <h3 className='my-4 fw-bold'>Recent Activities</h3>
+           <table className="table table-hover mx-1">
+                <thead className='table-success'>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">DATE</th>
+                        <th scope="col">STATUS</th>
+                        <th scope="col">SERIAL NO </th>
+
+                        <th scope="col">MODEL</th>
+                        <th scope="col">USER</th>
+                        <th scope="col">DEPARTMENT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {assets.map((asset, index) => (
+                        <tr key={asset.id || index}>
+                            <th scope="row">{index + 1}</th>
+                            <td>{asset.created_at || '—'}</td>
+                            <td>{asset.status || '—'}</td>
+                            <td>{asset.serial_no || '—'}</td>
+                            <td>{asset.model || '—'}</td>
+                            <td>{asset.name || '—'}</td>
+                            <td>{asset.department || '—'}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    )
 }
 
 export default RecentActivities

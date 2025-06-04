@@ -237,13 +237,13 @@ const UserPortal = () => {
                                         <p className="text-sm text-gray-600 mb-1">Department: {asset.department}</p>
                                         <p className="text-sm text-gray-600 mb-3">Location: {asset.location}</p>
 
-                                        <div className="flex space-x-2">
+                                        <div className="flex space-x-2 flex-wrap">
                                             <button
                                                 onClick={() => setSelectedAsset(asset)}
                                                 className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
                                             >
                                                 <Eye className="w-4 h-4" />
-                                                <span>View Details</span>
+                                                <span>Details</span>
                                             </button>
                                             <button
                                                 onClick={() => {

@@ -3,6 +3,8 @@ import Choices from "choices.js";
 import { Link } from "lucide-react";
 import axios from "axios";
 import {useParams} from "react-router-dom";
+import {FaUpload} from "react-icons/fa";
+import UploadExcel from "./UploadExcel.jsx";
 
 const api_url = import.meta.env.VITE_API_URL;
 const token = localStorage.getItem("AuthToken");
@@ -16,13 +18,14 @@ const AssetForm = () => {
     purchase_date: "",
     purchase_cost: "",
     description: "",
-    asset_type: "",
+    type: "",
     location: "",
     department: "",
-    status: "good",
+    status: "",
   });
 
   const { id } = useParams();
+  const [hideExcelForm, setHideExcelForm] = useState(true);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -83,10 +86,10 @@ const AssetForm = () => {
     { id: 4, name: "Damaged", label: "Damaged" },
   ];
 
-  const [assetType, setAssetType] = useState(defaultAssetTypes);
-  const [location, setLocation] = useState(defaultLocations);
-  const [department, setDepartment] = useState(defaultDepartments);
-  const [status, setStatus] = useState(defaultStatuses);
+  const [assetType, setAssetType] = useState([]);
+  const [location, setLocation] = useState([]);
+  const [department, setDepartment] = useState([]);
+  const [status, setStatus] = useState([]);
 
   const handleChange = ({ currentTarget: input }) => {
     setAssetData({ ...assetData, [input.name]: input.value });
@@ -143,11 +146,11 @@ const AssetForm = () => {
     setSuccess("");
     try{
       id ? await axios.put(`${api_url}/assets/${id}/`, assetData,{headers:{Authorization: `Bearer ${token}`}}) :
-      await axios.post(`${api_url}/assets/`, assetData, {
-        headers:{
-          Authorization: `Bearer ${token}`
-        }
-      });
+          await axios.post(`${api_url}/assets/`, assetData, {
+            headers:{
+              Authorization: `Bearer ${token}`
+            }
+          });
       setAssetData({
         name: "",
         serial_no: "",
@@ -156,7 +159,7 @@ const AssetForm = () => {
         purchase_date: "",
         purchase_cost: "",
         description: "",
-        asset_type: "",
+        type: "",
         location: "",
         department: "",
         status: "",
@@ -194,159 +197,68 @@ const AssetForm = () => {
     }
   }
 
-  // Initialize Choices.js for asset types
-  useEffect(() => {
-    if (!selectType.current) return;
+  const initChoicesDropdown = (ref, fieldName, items, value) => {
+    if (!ref.current) return;
 
-    const choice_types = new Choices(selectType.current, {
+    const instance = new Choices(ref.current, {
       removeItemButton: true,
       searchEnabled: true,
       placeholder: true,
-      placeholderValue: "Choose type",
-      searchPlaceholderValue: "Search type...",
+      placeholderValue: `Choose ${fieldName}`,
+      searchPlaceholderValue: `Search ${fieldName}...`,
       noResultsText: "No results found",
-      noChoicesText: "No type available",
+      noChoicesText: `No ${fieldName} available`,
       position: "auto",
     });
 
-    choicesInstances.current.asset_type = choice_types;
+    choicesInstances.current[fieldName] = instance;
 
-    selectType.current.addEventListener("change", (event) => {
-      updateAssetData("asset_type", event.detail.value);
+    ref.current.addEventListener("change", (event) => {
+      updateAssetData(fieldName, event.detail.value);
     });
 
-    if (assetType.length) {
-      choice_types.setChoices(
-        assetType.map((type) => ({
-          value: type.name,
-          label: type.name || type.label,
+    instance.setChoices(
+        items.map((item) => ({
+          value: item.name,
+          label: item.name || item.label,
         })),
         "value",
         "label",
         true
-      );
+    );
+
+    // Preselect value if editing
+    if (id && value) {
+      setTimeout(() => {
+        instance.setChoiceByValue(value);
+      }, 100); // Ensures the choices are loaded before selection
     }
 
     return () => {
-      choice_types.destroy();
-      delete choicesInstances.current.asset_type;
+      instance.destroy();
+      delete choicesInstances.current[fieldName];
     };
-  }, [assetType]);
+  };
 
   useEffect(() => {
-    if (!selectLocation.current) return;
-
-    const choice_location = new Choices(selectLocation.current, {
-      removeItemButton: true,
-      searchEnabled: true,
-      placeholder: true,
-      placeholderValue: "Choose location",
-      searchPlaceholderValue: "Search location...",
-      noResultsText: "No results found",
-      noChoicesText: "No location available",
-      position: "auto",
-    });
-
-    choicesInstances.current.location = choice_location;
-
-    selectLocation.current.addEventListener("change", (event) => {
-      updateAssetData("location", event.detail.value);
-    });
-
-    if (location.length) {
-      choice_location.setChoices(
-        location.map((loc) => ({
-          value: loc.name,
-          label: loc.name || loc.label,
-        })),
-        "value",
-        "label",
-        true
-      );
-    }
-
-    return () => {
-      choice_location.destroy();
-      delete choicesInstances.current.location;
-    };
-  }, [location]);
+    return initChoicesDropdown(selectType, "type", assetType, assetData.type);
+  }, [assetType, assetData.type, id]);
 
   useEffect(() => {
-    if (!selectDepartment.current) return;
+    return initChoicesDropdown(selectLocation, "location", location, assetData.location);
+  }, [location, assetData.location, id]);
 
-    const choice_dpt = new Choices(selectDepartment.current, {
-      removeItemButton: true,
-      searchEnabled: true,
-      placeholder: true,
-      placeholderValue: "Choose department",
-      searchPlaceholderValue: "Search department...",
-      noResultsText: "No results found",
-      noChoicesText: "No department available",
-      position: "auto",
-    });
-
-    choicesInstances.current.department = choice_dpt;
-
-    selectDepartment.current.addEventListener("change", (event) => {
-      updateAssetData("department", event.detail.value);
-    });
-
-    if (department.length) {
-      choice_dpt.setChoices(
-        department.map((dpt) => ({
-          value: dpt.name,
-          label: dpt.name || dpt.label,
-        })),
-        "value",
-        "label",
-        true
-      );
-    }
-
-    return () => {
-      choice_dpt.destroy();
-      delete choicesInstances.current.department;
-    };
-  }, [department]);
-
-  // For status
   useEffect(() => {
-    if (!selectStatus.current) return;
+    return initChoicesDropdown(selectDepartment, "department", department, assetData.department);
+  }, [department, assetData.department, id]);
 
-    const choice_status = new Choices(selectStatus.current, {
-      removeItemButton: true,
-      searchEnabled: true,
-      placeholder: true,
-      placeholderValue: "Choose status",
-      searchPlaceholderValue: "Search status...",
-      noResultsText: "No results found",
-      noChoicesText: "No status available",
-      position: "auto",
-    });
+  useEffect(() => {
+    return initChoicesDropdown(selectStatus, "status", status, assetData.status);
+  }, [status, assetData.status, id]);
 
-    choicesInstances.current.status = choice_status;
-
-    selectStatus.current.addEventListener("change", (event) => {
-      updateAssetData("status", event.detail.value);
-    });
-
-    if (status.length) {
-      choice_status.setChoices(
-        status.map((st) => ({
-          value: st.name,
-          label: st.name || st.label,
-        })),
-        "value",
-        "label",
-        true
-      );
-    }
-
-    return () => {
-      choice_status.destroy();
-      delete choicesInstances.current.status;
-    };
-  }, [status]);
+  const excelFormModal = () => {
+    setHideExcelForm(!hideExcelForm);
+  };
 
   useEffect(() => {
     if(id){
@@ -355,181 +267,188 @@ const AssetForm = () => {
   }, []);
 
   return (
-    <div className="p-5">
-      <h1 className="text-xl uppercase font-black"> {id? "Edit Asset" : "Add Asset" }</h1>
+      <div className="p-5 relative">
+        <button onClick={excelFormModal} className="inline-flex items-center px-4 py-2 border border-[#00763A] shadow-sm text-sm font-medium rounded-md text-[#00763A] hover:bg-[#00763A] hover:text-white transition-colors absolute right-10 top-10">
+          <FaUpload className="mr-2" />
+          Import Excel
+        </button>
 
-      {/* Success Message */}
-      {success && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-          {success}
-        </div>
-      )}
+        <UploadExcel hideExcelForm={hideExcelForm} excelFormModal={excelFormModal} />
 
-      {/* Error Message */}
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
+        <h1 className="text-xl uppercase font-black"> {id? "Edit Asset" : "Add Asset" }</h1>
 
-      <form className="mt-5" onSubmit={handleSubmit}>
-        <div className="grid grid-cols-2 gap-7">
-          <div className="grid gap-3">
-            <label htmlFor="name">Asset Name *</label>
-            <input
-              type="text"
-              name="name"
-              value={assetData.name}
-              placeholder="eg. HP ProBook 4320s"
-              className="px-3 py-2 outline-none border-2 rounded-md"
-              onChange={handleChange}
-              required
-            />
+        {/* Success Message */}
+        {success && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+              {success}
+            </div>
+        )}
+
+        {/* Error Message */}
+        {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              {error}
+            </div>
+        )}
+
+        <form className="mt-5" onSubmit={handleSubmit}>
+          <div className="grid grid-cols-2 gap-7">
+            <div className="grid gap-3">
+              <label htmlFor="name">Asset Name *</label>
+              <input
+                  type="text"
+                  name="name"
+                  value={assetData.name}
+                  placeholder="eg. HP ProBook 4320s"
+                  className="px-3 py-2 outline-none border-2 rounded-md"
+                  onChange={handleChange}
+                  required
+              />
+            </div>
+
+            <div className="grid gap-3">
+              <label htmlFor="serial_no">Serial Number *</label>
+              <input
+                  type="text"
+                  name="serial_no"
+                  value={assetData.serial_no}
+                  placeholder="Asset Serial Number"
+                  className="px-3 py-2 outline-none border-2 rounded-md"
+                  onChange={handleChange}
+                  required
+              />
+            </div>
+
+            <div className="grid gap-3">
+              <label htmlFor="asset_tag">Asset Tag</label>
+              <input
+                  type="text"
+                  name="asset_tag"
+                  id="asset_tag"
+                  value={assetData.asset_tag}
+                  placeholder="eg. HP0012"
+                  className="px-3 py-2 outline-none border-2 rounded-md"
+                  onChange={handleChange}
+              />
+            </div>
+
+            <div className="grid gap-3">
+              <label htmlFor="model">Model</label>
+              <input
+                  type="text"
+                  name="model"
+                  id="model"
+                  value={assetData.model}
+                  placeholder="eg. HP ProBook"
+                  className="px-3 py-2 outline-none border-2 rounded-md"
+                  onChange={handleChange}
+              />
+            </div>
+
+            <div className="grid gap-3">
+              <label htmlFor="purchase_date">Purchase Date</label>
+              <input
+                  type="date"
+                  id="purchase_date"
+                  name="purchase_date"
+                  value={assetData.purchase_date}
+                  className="px-3 py-2 outline-none border-2 rounded-md"
+                  onChange={handleChange}
+              />
+            </div>
+
+            <div className="grid gap-3">
+              <label htmlFor="purchase_cost">Purchase Cost</label>
+              <input
+                  type="number"
+                  name="purchase_cost"
+                  id="purchase_cost"
+                  value={assetData.purchase_cost}
+                  placeholder="20000"
+                  className="px-3 py-2 outline-none border-2 rounded-md"
+                  onChange={handleChange}
+                  step="0.01"
+              />
+            </div>
+
+            <div className="grid gap-3">
+              <label htmlFor="file">Upload File</label>
+              <input
+                  type="file"
+                  name="file"
+                  placeholder="Asset file"
+                  className="px-3 py-2 outline-none border-0 rounded-md"
+              />
+            </div>
+
+            <div className="grid gap-3 col-span-2">
+              <label htmlFor="description">Description</label>
+              <textarea
+                  name="description"
+                  id="description"
+                  value={assetData.description}
+                  placeholder="Write the description for the asset"
+                  rows={5}
+                  className="px-3 py-2 outline-none border-2 rounded-md"
+                  onChange={handleChange}
+              ></textarea>
+            </div>
+
+            <div className="grid gap-3">
+              <label htmlFor="asset_type">Type *</label>
+              <select
+                  id="asset_type"
+                  name="asset_type"
+                  required
+                  ref={selectType}
+                  className="block w-full"
+              ></select>
+            </div>
+
+            <div className="grid gap-3">
+              <label htmlFor="location">Location *</label>
+              <select
+                  id="location"
+                  name="location"
+                  required
+                  ref={selectLocation}
+                  className="block w-full"
+              ></select>
+            </div>
+
+            <div className="grid gap-3">
+              <label htmlFor="department">Department *</label>
+              <select
+                  id="department"
+                  name="department"
+                  required
+                  ref={selectDepartment}
+                  className="block w-full"
+              ></select>
+            </div>
+
+            <div className="grid gap-3">
+              <label htmlFor="status">Status *</label>
+              <select
+                  id="status"
+                  name="status"
+                  required
+                  ref={selectStatus}
+                  className="block w-full"
+              ></select>
+            </div>
           </div>
 
-          <div className="grid gap-3">
-            <label htmlFor="serial_no">Serial Number *</label>
-            <input
-              type="text"
-              name="serial_no"
-              value={assetData.serial_no}
-              placeholder="Asset Serial Number"
-              className="px-3 py-2 outline-none border-2 rounded-md"
-              onChange={handleChange}
-              required
-            />
+          <div className="flex justify-end items-center gap-4 mt-5">
+            <a href="/assets" className="btn btn-danger">
+              Close
+            </a>
+            <button type="submit" className="btn btn-success" disabled={loading}>
+              {loading ? id ? "Editing..." : "Saving..." : id ? "Edit Asset" : "Save Asset"}
+            </button>
           </div>
-
-          <div className="grid gap-3">
-            <label htmlFor="asset_tag">Asset Tag</label>
-            <input
-              type="text"
-              name="asset_tag"
-              id="asset_tag"
-              value={assetData.asset_tag}
-              placeholder="eg. HP0012"
-              className="px-3 py-2 outline-none border-2 rounded-md"
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="grid gap-3">
-            <label htmlFor="model">Model</label>
-            <input
-              type="text"
-              name="model"
-              id="model"
-              value={assetData.model}
-              placeholder="eg. HP ProBook"
-              className="px-3 py-2 outline-none border-2 rounded-md"
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="grid gap-3">
-            <label htmlFor="purchase_date">Purchase Date</label>
-            <input
-              type="date"
-              id="purchase_date"
-              name="purchase_date"
-              value={assetData.purchase_date}
-              className="px-3 py-2 outline-none border-2 rounded-md"
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="grid gap-3">
-            <label htmlFor="purchase_cost">Purchase Cost</label>
-            <input
-              type="number"
-              name="purchase_cost"
-              id="purchase_cost"
-              value={assetData.purchase_cost}
-              placeholder="20000"
-              className="px-3 py-2 outline-none border-2 rounded-md"
-              onChange={handleChange}
-              step="0.01"
-            />
-          </div>
-
-          <div className="grid gap-3">
-            <label htmlFor="file">Upload File</label>
-            <input
-              type="file"
-              name="file"
-              placeholder="Asset file"
-              className="px-3 py-2 outline-none border-0 rounded-md"
-            />
-          </div>
-
-          <div className="grid gap-3 col-span-2">
-            <label htmlFor="description">Description</label>
-            <textarea
-              name="description"
-              id="description"
-              value={assetData.description}
-              placeholder="Write the description for the asset"
-              rows={5}
-              className="px-3 py-2 outline-none border-2 rounded-md"
-              onChange={handleChange}
-            ></textarea>
-          </div>
-
-          <div className="grid gap-3">
-            <label htmlFor="asset_type">Type *</label>
-            <select
-              id="asset_type"
-              name="asset_type"
-              required
-              ref={selectType}
-              className="block w-full"
-            ></select>
-          </div>
-
-          <div className="grid gap-3">
-            <label htmlFor="location">Location *</label>
-            <select
-              id="location"
-              name="location"
-              required
-              ref={selectLocation}
-              className="block w-full"
-            ></select>
-          </div>
-
-          <div className="grid gap-3">
-            <label htmlFor="department">Department *</label>
-            <select
-              id="department"
-              name="department"
-              required
-              ref={selectDepartment}
-              className="block w-full"
-            ></select>
-          </div>
-
-          <div className="grid gap-3">
-            <label htmlFor="status">Status *</label>
-            <select
-              id="status"
-              name="status"
-              required
-              ref={selectStatus}
-              className="block w-full"
-            ></select>
-          </div>
-        </div>
-
-        <div className="flex justify-end items-center gap-4 mt-5">
-          <a href="/assets" className="btn btn-danger">
-            Close
-          </a>
-          <button type="submit" className="btn btn-success" disabled={loading}>
-            {loading ? id ? "Editing..." : "Saving..." : id ? "Edit Asset" : "Save Asset"}
-          </button>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
   );
 };
 
