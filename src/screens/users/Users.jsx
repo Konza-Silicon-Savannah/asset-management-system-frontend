@@ -107,17 +107,31 @@ const Users = () => {
   };
 
   const toggleUserStatus = async (id, currentStatus) => {
-    try {
-      const newStatus = currentStatus === "active" ? "inactive" : "active";
-      const response = await axios.patch(`${api_url}/users/${id}/`, {
-        status: newStatus,
-      });
+  const newStatus = currentStatus === "active" ? "inactive" : "active";
 
-      fetchUsers();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    await axios.patch(`${api_url}/users/${id}/`, { status: newStatus }, config);
+
+    // Update the user's status locally without reloading
+    const updatedUsers = users.map((user) =>
+      user.id === id ? { ...user, status: newStatus } : user
+    );
+
+    setUsers(updatedUsers);
+
+    handleShowAlert("success", `User ${newStatus === "active" ? "activated" : "deactivated"} successfully`);
+  } catch (error) {
+    console.log(error);
+    handleShowAlert("error", "Failed to update user status");
+  }
+};
+
 
   useEffect(() => {
     fetchUsers();
