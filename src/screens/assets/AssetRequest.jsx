@@ -1,83 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { FaCircle, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import formatDate from "../helpers/DateFormat.jsx";
+import axios from "axios";
+
+const api_url = import.meta.env.VITE_API_URL;
+const token = localStorage.getItem("AuthToken");
 
 const AssetRequest = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const API_BASE_URL = "http://localhost:8000";
-
-  // Get auth token from localStorage
-  const getAuthToken = () => {
-    // Check common token names
-    const tokenNames = [
-      "access_token",
-      "token",
-      "authToken",
-      "accessToken",
-      "jwt_token",
-      "auth_token",
-      "bearerToken",
-    ];
-
-    for (const tokenName of tokenNames) {
-      const token = localStorage.getItem(tokenName);
-      if (
-        token &&
-        token !== "null" &&
-        token !== "undefined" &&
-        token.trim() !== ""
-      ) {
-        console.log(
-          `Found token in ${tokenName}:`,
-          token.substring(0, 20) + "..."
-        );
-        return token;
-      }
-    }
-
-    console.log("No valid token found in localStorage");
-    console.log("Available localStorage keys:", Object.keys(localStorage));
-    return null;
-  };
-
   // Fetch requests from API
   const fetchRequests = async () => {
     try {
       setLoading(true);
 
-      // For testing - skip authentication check
-      // if (!isAuthenticated()) {
-      //   throw new Error("No authentication token found. Please log in.");
-      // }
-
-      const token = getAuthToken();
-      const headers = {
-        "Content-Type": "application/json",
-      };
-
-      // Add authorization header only if token exists
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
-
-      const response = await fetch(`${API_BASE_URL}/requests/`, {
-        method: "GET",
-        headers: headers,
+      const response = await axios.get(`${api_url}/requests/`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
 
-      if (response.status === 401) {
-        throw new Error("Authentication failed. Please log in again.");
-      }
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setRequests(data.results || data); // Handle both paginated and non-paginated responses
+      setRequests(response.data.results);
       setError(null);
     } catch (err) {
       console.error("Error fetching requests:", err);
