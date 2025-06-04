@@ -1,6 +1,7 @@
 import React from 'react'
 import { useEffect, useState } from 'react';
 import axios from "axios";
+import formatDate from "../helpers/DateFormat.jsx";
 const api_url = import.meta.env.VITE_API_URL;
 const token = localStorage.getItem("AuthToken");
 
@@ -11,7 +12,7 @@ const RecentActivities = () => {
         const fetchAssets = async () => {
 
             try {
-                const response = await axios.get(`${api_url}/assets/`, {
+                const response = await axios.get(`${api_url}/requests/`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -34,30 +35,27 @@ const RecentActivities = () => {
 
 
         <div className='my-3'>
-            <h3 className='my-4 fw-bold'>Recent Activities</h3>
+            <h3 className='my-4 fw-bold'>Recent Requests</h3>
            <table className="table table-hover mx-1">
                 <thead className='table-success'>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">DATE</th>
-                        <th scope="col">STATUS</th>
-                        <th scope="col">SERIAL NO </th>
-
-                        <th scope="col">MODEL</th>
+                        <th scope="col">ASSET NAME</th>
+                        <th scope="col">ASSET TYPE</th>
                         <th scope="col">USER</th>
                         <th scope="col">DEPARTMENT</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {assets.map((asset, index) => (
+                    {assets.slice(0, 10).map((asset, index) => (
                         <tr key={asset.id || index}>
                             <th scope="row">{index + 1}</th>
-                            <td>{asset.created_at || '—'}</td>
-                            <td>{asset.status || '—'}</td>
-                            <td>{asset.serial_no || '—'}</td>
-                            <td>{asset.model || '—'}</td>
-                            <td>{asset.name || '—'}</td>
-                            <td>{asset.department || '—'}</td>
+                            <td>{formatDate(asset.requested_date)}</td>
+                            <td>{asset.requested_asset?.name}</td>
+                            <td>{asset.requested_asset?.type}</td>
+                            <td>{asset.requested_user?.name}</td>
+                            <td>{asset.requested_user?.department}</td>
                         </tr>
                     ))}
                 </tbody>
