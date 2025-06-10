@@ -7,6 +7,8 @@ import ExportCSV from "./CSV.jsx";
 import ExportExcel from "./Excel.jsx";
 import ExportPDF from "./PDF.jsx";
 import Pagination from "../helpers/Pagination.jsx";
+import TopBar from '../dashboard/TopBar.jsx'
+
 
 const api_url = import.meta.env.VITE_API_URL;
 const token = localStorage.getItem("AuthToken");
@@ -128,7 +130,12 @@ const Reports = () => {
 
     return (
         <div className="min-h-dvh bg-gray-50 p-6">
-            <div className="mx-auto">
+            <div style={{position:'absolute', right:'0', top:'0'}}>
+
+      <TopBar/>
+
+        </div>
+            <div className="mt-4">
                 <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
                     <div className="flex items-center justify-between mb-4">
                         <h1 className="text-2xl font-bold text-gray-900">Asset Management Reports</h1>

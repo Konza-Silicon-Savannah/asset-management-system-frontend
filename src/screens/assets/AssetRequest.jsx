@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaCircle, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import formatDate from "../helpers/DateFormat.jsx";
 import axios from "axios";
+import TopBar from '../dashboard/TopBar.jsx'
 
 const api_url = import.meta.env.VITE_API_URL;
 const token = localStorage.getItem("AuthToken");
@@ -122,6 +123,10 @@ const AssetRequest = () => {
 
   return (
     <div className="p-5">
+      <div style={{position:'absolute', right:'0', top:'0'}}>
+
+      <TopBar/>
+        </div>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Asset Requests</h2>
         <button className="btn btn-outline-primary" onClick={fetchRequests}>

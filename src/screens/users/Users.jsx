@@ -5,6 +5,7 @@ import axios from "axios";
 import CustomAlert from "../helpers/CustomAlert.jsx";
 import FormatErrors from "../helpers/FormatErrors.jsx";
 import Pagination from "../helpers/Pagination.jsx";
+import TopBar from '../dashboard/TopBar.jsx'
 
 const api_url = import.meta.env.VITE_API_URL;
 const token = localStorage.getItem("AuthToken");
@@ -209,6 +210,7 @@ const Users = () => {
   if (error && !loading) {
     return (
         <div className="p-5">
+          
           <div className="alert alert-danger" role="alert">
             <strong>Error:</strong> {error}
             <button
@@ -224,6 +226,10 @@ const Users = () => {
 
   return (
       <div className="p-5">
+        <div style={{position:'absolute', right:'0', top:'0'}}>
+
+      <TopBar/>
+        </div>
         <div className="d-flex justify-content-between align-items-center mb-4">
           <div className="d-flex align-items-center">
             <div className="input-group me-3">
