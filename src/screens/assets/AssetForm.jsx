@@ -5,6 +5,7 @@ import axios from "axios";
 import {useParams} from "react-router-dom";
 import {FaUpload} from "react-icons/fa";
 import UploadExcel from "./UploadExcel.jsx";
+import TopBar from '../dashboard/TopBar.jsx'
 
 const api_url = import.meta.env.VITE_API_URL;
 const token = localStorage.getItem("AuthToken");
@@ -268,6 +269,10 @@ const AssetForm = () => {
 
   return (
       <div className="p-5 relative">
+        <div style={{position:'absolute', right:'0', top:'0'}}>
+
+      <TopBar/>
+        </div>
         {!id && (
             <button onClick={excelFormModal} className="inline-flex items-center px-4 py-2 border border-[#00763A] shadow-sm text-sm font-medium rounded-md text-[#00763A] hover:bg-[#00763A] hover:text-white transition-colors absolute right-10 top-10">
               <FaUpload className="mr-2" />
