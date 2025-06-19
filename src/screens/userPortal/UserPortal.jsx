@@ -59,8 +59,10 @@ const UserPortal = () => {
                     Authorization: `Bearer ${token}`
                 }
             });
-            setAvailableTypes(response.data);
+            const data = response.data;
+            setAvailableTypes(Array.isArray(data) ? data : []);
         } catch (error) {
+            setAvailableTypes([]);
             console.log(error);
         }
     };
@@ -214,7 +216,7 @@ const UserPortal = () => {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                            {assets.map(asset => (
+                            {Array.isArray(assets) && assets.map(asset => (
                                 <div key={asset.id} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-gray-200">
                                     <div className="p-6">
                                         <div className="flex items-start justify-between mb-4">
@@ -271,7 +273,7 @@ const UserPortal = () => {
                                 <h2 className="text-lg font-semibold text-gray-900">My Current Assets</h2>
                             </div>
                             <div className="grid grid-cols-3 gap-4 p-4">
-                                {approvedRequests.map(asset => (
+                                {Array.isArray(approvedRequests) && approvedRequests.map(asset => (
                                     <div key={asset.id} className="p-6 hover:bg-gray-50 border border-gray-600 rounded-md cursor-pointer">
                                         <div className="flex items-center justify-between">
                                             <div className="flex-1">
@@ -309,7 +311,7 @@ const UserPortal = () => {
                                         <p>No requests yet. Browse assets to make your first request!</p>
                                     </div>
                                 ) : (
-                                    userRequests.map(request => (
+                                    Array.isArray(userRequests) && userRequests.map(request => (
                                         <div key={request.id} className="p-6 hover:bg-gray-50 border border-gray-600 rounded-md cursor-pointer">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex-1">

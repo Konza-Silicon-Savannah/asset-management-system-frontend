@@ -226,11 +226,10 @@ const Users = () => {
 
   return (
       <div className="p-5">
-        <div style={{position:'absolute', right:'0', top:'0'}}>
-
-      <TopBar/>
+        <div>
+          <TopBar/>
         </div>
-        <div className="d-flex justify-content-between align-items-center mb-4">
+        <div className="d-flex justify-content-between align-items-center" >
           <div className="d-flex align-items-center">
             <div className="input-group me-3">
             <span className="input-group-text">
@@ -256,7 +255,7 @@ const Users = () => {
             </select>
           </div>
           <button
-              className="btn btn-success d-flex align-items-center gap-2"
+              className="btn btn-success d-flex align-items-center gap-2 z-10"
               data-bs-toggle="modal"
               data-bs-target="#exampleModal"
           >

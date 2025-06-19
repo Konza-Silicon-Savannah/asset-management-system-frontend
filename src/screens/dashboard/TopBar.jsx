@@ -32,7 +32,7 @@ const TopBar = () => {
     }, []);
 
     return (
-        <div className='p-2 d-flex align-items-center justify-content-end mb-4 position-relative'>
+        <div className='p-2 d-flex align-items-center justify-content-end position-fixed top-0 right-0' >
             <div className="col-md-12 d-flex justify-content-end px-3 gap-2 position-relative">
                 <IoMdNotificationsOutline
                     style={{

@@ -32,7 +32,8 @@ const Reports = () => {
     const fetchReport = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`${api_url}/reports?page=${currentPage}`, {
+            const url = `${api_url}/reports?page=${currentPage}`;
+            const response = await axios.get(url, {
                 params: {
                     page: currentPage,
                     type: selectedType,
@@ -73,9 +74,11 @@ const Reports = () => {
                     Authorization: `Bearer ${token}`
                 }
             });
-            setAvailableTypes(response.data);
+            const data = response.data;
+            setAvailableTypes(Array.isArray(data) ? data : []);
         } catch (error) {
             console.log(error);
+            setAvailableTypes([]);
         }
     };
 

@@ -38,30 +38,28 @@ const ViewAsset = () => {
   const fetchAssets = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${api_url}/assets?page=${currentPage}&status=${selectedStatus}&search=${searchTerm}`, {
+      // const response = await fetch(`${api_url}/assets?page=${currentPage}&status=${selectedStatus}&search=${searchTerm}`, {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`
+      //   }
+      // });
+      // const response = await axios.get("https://dev-asset.konza.go.ke/api/assets?page=${currentPage}&status=${selectedStatus}&search=${searchTerm}", {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`
+      //   }
+      // });
+      const url = `${api_url}/assets/?page=${currentPage}&status=${selectedStatus}&search=${searchTerm}`
+
+      const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      if (response.ok) {
-        const data = await response.json();
 
-        // Handle paginated response
-        if (data.results) {
-          setAssets(data.results);
-          setTotalItems(data.count);
-
-          // Calculate total pages based on fixed items per page
-          setTotalPages(Math.ceil(data.count / itemsPerPage));
-        } else {
-          // Handle non-paginated response
-          setAssets(data);
-          setTotalItems(data.length);
-          setTotalPages(Math.ceil(data.length / itemsPerPage));
-        }
-      } else {
-        setError("Failed to fetch assets");
-      }
+      console.log(response.data);
+      setAssets(response.data.results);
+      setTotalItems(response.data.count);
+      setTotalPages(Math.ceil(response.data.count / itemsPerPage));
     } catch (error) {
       console.error("Error fetching assets:", error);
       setError("Network error. Please check your connection.");
